@@ -215,29 +215,27 @@ outerloop@ for (i in 1..100) {
 }
 ```
 
-// 5.10 if
-------------
-------------
+## 5.10 if
+``` kotlin
 if (x == 10) println("x is 10")
 	else if (x == 9) println("x is 9")
 		else if (x == 8) println("x is 8")
 			else println("x is less than 8")
 }
+```
 
-// 5.11 when
--------------
--------------
+## 5.11 when
+``` kotlin
 when (x) { // kind od switch case
 	10 -> println ("x is 10")
 	9 -> println("x is 9")
 	8 -> println("x is 8")
 	else -> println("x is less than 8")
 }
+```
 
-
-// 5.12 functions
-------------------
-------------------
+## 5.12 functions
+``` kotlin
 fun multiply(x: Int, y: Int): Int {
 return x * y
 }
@@ -256,10 +254,10 @@ fun displayStrings(vararg strings: String) // vararg when number of params is un
 	}
 }
 displayStrings("one", "two", "three", "four")
+```
 
-
-// 5.12.1 lambda (see compose learning/lambda)
--------------------------------------------------
+### 5.12.1 lambda (see compose learning/lambda)
+``` kotlin
 val sayHello = { println("Hello") }
 sayHello()
 
@@ -278,10 +276,10 @@ myvar()
 val result = { val1: Int, val2: Int -> val1 * val2 }(10, 20) -// -> force the execution for 10 and 20
 
 val result = { println("Hello"); true }() -// -> return true after executed the lambda
+```
 
-
-// 5.12.2 Higher-order functions
-----------------------------------
+### 5.12.2 Higher-order functions
+``` kotlin
 fun inchesToFeet (inches: Double): Double {
 	return inches * 0.0833333
 }
@@ -320,12 +318,10 @@ fun decideFunction(feet: Boolean): (Double) -> Double
 val converter = decideFunction(true)
 val result = converter(22.4)
 println(result)
+```
 
-
-// 5.13 OOP
--------------
--------------
-
+## 5.13 OOP
+``` kotlin
 class BankAccount {
 	var accountBalance: Double = 0.0
 	var accountNumber: Int = 0
@@ -341,9 +337,10 @@ val account1: BankAccount = BankAccount() // instanciation
 val account1 = BankAccount() // work too
 account1.displayBalance() // call of function
 account1.accountNumber = 2 // call of property (possible if public)
+```
 
-// 5.13.1 constructor & init
-------------------------------
+### 5.13.1 constructor & init
+``` kotlin
 class BankAccount {
 	var accountBalance: Double = 0.0
 	var accountNumber: Int = 0
@@ -375,9 +372,10 @@ class BankAccount (val accountNumber: Int, var accountBalance: Double) { // 1st 
 		// some functions or affectations
 	}
 }
+```
 
-// 5.13.2 accessors (getter & setter)
----------------------------------------
+### 5.13.2 accessors (getter & setter)
+``` kotlin
 class BankAccount (val accountNumber: Int, var accountBalance: Double) {
 	val fees: Double = 25.00
 
@@ -394,10 +392,10 @@ class BankAccount (val accountNumber: Int, var accountBalance: Double) {
 
 val balance1 = account1.balanceLessFees
 account1.balanceLessFees = 12123.12
+```
 
-
-// 5.13.3 nested classes
---------------------------
+### 5.13.3 nested classes
+``` kotlin
 class ClassA {
 	class ClassB { // classB doesn't have access to classA properties
 	}
@@ -410,9 +408,10 @@ class ClassA {
 		val result = 20 + myProperty
 	}
 }
+```
 
-// 5.13.4 Companion
---------------------
+### 5.13.4 Companion
+``` kotlin
 // properties and functions from the companion are reachable from all instances of the class 
 // & also from directly from the Class without instanciation like "Static" contents
 
@@ -431,9 +430,10 @@ fun main(args: Array<String>) {
 	MyClass.counterUp()
 	println(MyClass.counter)
 }
+```
 
-// 5.13.5 inheritance
-----------------------
+### 5.13.5 inheritance
+```
 open class MyParentClass { // "open" mandatory to have children
 	var myProperty: Int = 0
 }
@@ -462,14 +462,12 @@ class MySubClass : MyParentClass {
 		println("Prevailing interest rate is $interestRate")
 	}
 }
+```
 
+# 6) Compose
 
-6) Compose
-_________________________________________________________________________
-
-
-// 6.1 Stateful vs Stateless (see book/mMyApplication3states for more details)
--------------------------------------------------------------------------------
+## 6.1 Stateful vs Stateless (see book/mMyApplication3states for more details)
+``` kotlin
 @Composable
 fun DemoScreen() { // stateful
 	var sliderPosition by remember { mutableStateOf(20f) }
@@ -485,17 +483,18 @@ fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // 
 		onValueChange = onPositionChange
 	)
 }
+```
 
-// 6.2 layout, foundation & Material design components
---------------------------------------------------------
-// layout :
+## 6.2 layout, foundation & Material design components
+
+### layout
 • Box
 • BoxWithConstraints
 • Column
 • ConstraintLayout
 • Row
 
-// Foundation
+### Foundation
 • BaseTextField
 • Canvas
 • Image
@@ -504,7 +503,7 @@ fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // 
 • Shape
 • Text
 
-// Material design
+### Material design
 • AlertDialog
 • Button
 • Card
@@ -523,20 +522,17 @@ fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // 
 • TopAppBar
 • BottomNavigation
 
-// 6.3 state (see book/mMyApplication3states for more details))
------------------------------------------------------------------
-/* STATE HOISTING
---------------------
+## 6.3 state (see book/mMyApplication3states for more details))
 
- * goal // > make the child composable stateless in order to make it easier to reuse
- * so an ancestor or the parent manage the state that can be passed to other child functions
+### STATE HOISTING
 
- * if no state hoisting like that : 
+goal : make the child composable stateless in order to make it easier to reuse
+so an ancestor or the parent manage the state that can be passed to other child functions
 
- * NOT TO DO !
- * --------------
- */
+if no state hoisting like that : 
 
+NOT TO DO :
+``` kotlin
 @Composable
 fun MyTextField() {
 	var textState by remember { mutableStateOf("") } // state
@@ -551,12 +547,10 @@ fun MyTextField() {
 /* issues :
  * 1. the textState cannot be passed to other parent or same level functions
  * 2. another state canot be passed to the function
+```
 
-
- * TO DO !
- * -------------
- */
-
+TO DO :
+``` kotlin
  @Composable 
  fun HomeScreen() {
  	var textState by remember { mutableStateOf("") } // state
@@ -573,24 +567,23 @@ fun MyTextField(
 		value = textState,
 		onValueChange = onTextChange
 	)
-} 
+}
+``` 
 
-// rememberSaveable
-// ------------------
-var textState by rememberSaveable { mutableStateOf("")  
+### rememberSaveable
+``` kotlin
+var textState by rememberSaveable { mutableStateOf("")
+``` 
 
-/* during some changes the activity is rebuilt and by the way reinit the states with their initial values
- * "rememberSaveable" // has to be used to keep the states even after activity rebuilt
- */
+during some changes the activity is rebuilt and by the way reinit the states with their initial values
+"rememberSaveable" has to be used to keep the states even after activity rebuilt
 
-// Composition Local (see book/yapplication4complocal)
-// --------------------------------------------------------------------
+### Composition Local (see book/yapplication4complocal)
+goal : no need to pass as arg the states in the hierarchy (from children to children)
+the State declared in this way is local to the branch of the hierarchy tree in which a value is assigned
 
-/* goal : no need to pass as arg the states in the hierarchy (from children to children)
- * the State declared in this way is local to the branch of the hierarchy tree in which a value is assigned
-  */
-
-// exemple : 
+exemple : 
+``` kotlin
  val LocalColor = staticCompositionLocalOf { Color.Gray } // needs to be outside all funs or classes
  // the Color object is the state
 
@@ -619,9 +612,10 @@ fun Comp3 () {
         Comp5()
     }
 }
+```
 
-// 6.4 Slot API (Composable as param) (see book/MyApplication5slots)
-----------------------------------------------------------------------
+## 6.4 Slot API (Composable as param) (see book/MyApplication5slots)
+``` kotlin
 @Composable
 fun SlotDemo(
 	topContent: @Composable () -> Unit,
@@ -639,28 +633,29 @@ SlotDemo (
 	{ Comp1 () },
 	{ Comp2 () }
 )
+```
 
-// 6.5 Modifiers (see book/MyApplication6modifiers)
-------------------------------------------------------
-// Common built-in modifiers list
+## 6.5 Modifiers (see book/MyApplication6modifiers)
+Common built-in modifiers list
 
 "https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier"
 
 • background 	- Draws a solid colored shape behind the composable.
 • clickable 	- Specifies a handler to be called when the composable is clicked. Also causes a ripple effect when the click is performed.
-• clip 			- Clips the composable content to a specified shape.
+• clip 		- Clips the composable content to a specified shape.
 • fillMaxHeight - The composable will be sized to fit the maximum height permitted by its parent.
 • fillMaxSize 	- The composable will be sized to fit the maximum height and width permitted by its parent.
 • fillMaxWidth 	- The composable will be sized to fit the maximum width permitted by its parent.
-• layout 		- Used when implementing custom layout behavior, a topic covered in the chapter entitled “Building Custom Layouts”.
-• offset 		- Positions the composable the specified distance from its current position along the x and y-axis.
-• padding 		- Adds space around a composable. Parameters can be used to apply spacing to all four sides or to specify different padding for each side.
-• rotate 		- Rotates the composable on its center point by a specified number of degrees.
-• scale 		- Increase or reduce the size of the composable by the specified scale factor.
+• layout 	- Used when implementing custom layout behavior, a topic covered in the chapter entitled “Building Custom Layouts”.
+• offset 	- Positions the composable the specified distance from its current position along the x and y-axis.
+• padding 	- Adds space around a composable. Parameters can be used to apply spacing to all four sides or to specify different padding for each side.
+• rotate 	- Rotates the composable on its center point by a specified number of degrees.
+• scale 	- Increase or reduce the size of the composable by the specified scale factor.
 • scrollable 	- Enables scrolling for a composable that extends beyond the viewable area of the layout in which it is contained.
-• size 			- Used to specify the height and width of a composable. In the absence of a size setting, the composable will be sized to accommodate its content (referred to as wrapping).
+• size 		- Used to specify the height and width of a composable. In the absence of a size setting, the composable will be sized to accommodate its content (referred to as wrapping).
 
-// modifiers combining
+modifiers combining
+``` kotlin
 val combinedModifier = firstModifier.then(secondModifier).then(thirdModifier) ...
 
 val modifier2 = Modifier.width(150.dp)
@@ -674,12 +669,12 @@ CustomImage(
         .clip(shape = RoundedCornerShape(30.dp))
         .width(10.dp) // if 2 or more "width" params -> only the 1st declared is taken
 )
+```
 
-// 6.6 Annotated strings (see book/MyApplication7annotatedstrings)
-------------------------------------------------------------------
-------------------------------------------------------------------
-// 6.6.1 SpanStyle
---------------------
+## 6.6 Annotated strings (see book/MyApplication7annotatedstrings)
+
+### 6.6.1 SpanStyle
+``` kotlin
 buildAnnotatedString {
 	withStyle(style = SpanStyle( /* style settings */)) {
 		append(/* text string */)
@@ -690,9 +685,9 @@ buildAnnotatedString {
 .
 .
 }
+```
 
-// SpanStyle options
-// -------------------
+#### SpanStyle options
 • color
 • fontSize
 • fontWeight
@@ -708,9 +703,8 @@ buildAnnotatedString {
 • textDecoration
 • shadow
 
-// ParaphStyle
-// -------------
-
+### 6.6.2 ParaphStyle
+``` kotlin
 buildAnnotatedString {
 	withStyle(style = ParagraphStyle( /* style settings */)) {
 		append(/* text string */)
@@ -721,18 +715,17 @@ buildAnnotatedString {
 .
 .
 }
+```
 
 
-// 6.6.2 ParaphStyle options
-------------------------------
-ParagraphStyle, on the other hand, applies a style to paragraphs and can be used to modify the following
-properties:
+#### ParaphStyle options
+ParagraphStyle, on the other hand, applies a style to paragraphs and can be used to modify the following properties:
 • textAlign
 • textDirection
 • lineHeight
 • textIndent
 
-
+``` kotlin
 val myColors = listOf( /* color list */)
 Text(
 	text = "text here",
@@ -742,74 +735,71 @@ Text(
 		)
 	)
 )
+```
 
-// 6.7 Rows & columns (see book/MyApplication8rowcolumn)
-------------------------------------------------------------
-------------------------------------------------------------
+## 6.7 Rows & columns (see book/MyApplication8rowcolumn)
 
-// Alignment
--------------------
+### Alignment
+``` kotlin
 Row(verticalAlignment = Alignment.CenterVertically){}
+```
 
-// Alignment Params
---------------------
-// ROW
-// ----
+### Alignment Params
 
-.Top 				- Aligns the content at the top of the "ROW" content area.
+#### ROW
+
+.Top 			- Aligns the content at the top of the "ROW" content area.
 .CenterVertically 	- Positions the content in the vertical center of the "ROW" content area.
-.Bottom 			- Aligns the content at the bottom of the "ROW" content area.
+.Bottom 		- Aligns the content at the bottom of the "ROW" content area.
 
 When working with the Column composable, the horizontalAlignment parameter is used to configure alignment
 along the horizontal axis. Acceptable values are as follows:
 
-// COLUMN
-// -------
-.Start 				- Aligns the content at the horizontal start of the "COLUMN" content area.
-.CenterHorizontally - Positions the content in the horizontal center of the "COLUMN" content area
-.End 				- Aligns the content at the horizontal end of the "COLUMN" content area.
+#### COLUMN
 
-// Arrangement
-----------------
+.Start 			- Aligns the content at the horizontal start of the "COLUMN" content area.
+.CenterHorizontally 	- Positions the content in the horizontal center of the "COLUMN" content area
+.End 			- Aligns the content at the horizontal end of the "COLUMN" content area.
+
+### Arrangement
+``` kotlin
 Column(verticalArrangement = Arrangement.Center){}
+```
+#### Arrangements params
 
-// Arrangements params
-----------------------
-// ROW
-// -----
-.Start 				- Aligns the content at the horizontal start of the "ROW" content area.
-.Center 			- Positions the content in the horizontal center of the "ROW" content area.
-.End 				- Aligns the content at the horizontal end of the "ROW" content area.
+##### ROW
+.Start 		- Aligns the content at the horizontal start of the "ROW" content area.
+.Center 	- Positions the content in the horizontal center of the "ROW" content area.
+.End 		- Aligns the content at the horizontal end of the "ROW" content area.
 
-// COLUMN
-// --------
-.Top 				- Aligns the content at the top of the "COLUMN" content area.
-.Center 			- Positions the content in the vertical center of the "COLUMN" content area.
-.Bottom 			- Aligns the content at the bottom of the "COLUMN" content area.
+##### COLUMN
+.Top 		- Aligns the content at the top of the "COLUMN" content area.
+.Center 	- Positions the content in the vertical center of the "COLUMN" content area.
+.Bottom 	- Aligns the content at the bottom of the "COLUMN" content area.
 
-// ARRANGEMENT SPACING
-// ---------------------
+#### ARRANGEMENT SPACING
+``` kotlin
 Row(horizontalArrangement = Arrangement.SpaceEvenly
+```
+.SpaceEvenly 	- Children are spaced equally, including space before the first and after the last child.
+.SpaceBetween 	- Children are spaced equally, with no space allocation before the first and after the last child.
+.SpaceAround 	- Children are spaced equally, including half spacing before the first and after the last child.
 
-
-.SpaceEvenly 		- Children are spaced equally, including space before the first and after the last child.
-.SpaceBetween 		- Children are spaced equally, with no space allocation before the first and after the last child.
-.SpaceAround 		- Children are spaced equally, including half spacing before the first and after the last child.
-
-Row and Column scope
----------------------
+### Row and Column scope
+``` kotlin
 Row(modifier = Modifier.height(300.dp)) {
 	TextCell("1", Modifier.align(Alignment.Top))
 	TextCell("2", Modifier.align(Alignment.CenterVertically))
 	TextCell("3", Modifier.align(Alignment.Bottom))
 }
-• Modifier.align() 	- Allows the child to be aligned horizontally using Alignment.CenterHorizontally, Alignment. Start, and Alignment.End values.
-• Modifier.alignBy()- Aligns a child horizontally with other siblings on which the alignBy() modifier has also been applied.
-• Modifier.align() 	- Allows the child to be aligned vertically using Alignment.CenterVertically, Alignment.Top, and Alignment.Bottom values.
-• Modifier.alignBy()- Aligns a child with other siblings on which the alignBy() modifier has also been applied. Alignment may be performed by baseline or using custom alignment line configurations.
-• Modifier.alignByBaseline() - Aligns the baseline of a child with any siblings that have also been configured
-• Modifier.paddingFrom() - Allows padding to be added to the alignment line of a child.
-• Modifier.weight() - Sets the width of the child relative to the weight values assigned to its siblings. > 0.2f, 0.8f
+```
+• Modifier.align() 		- Allows the child to be aligned horizontally using Alignment.CenterHorizontally, Alignment. Start, and Alignment.End values.
+• Modifier.alignBy()		- Aligns a child horizontally with other siblings on which the alignBy() modifier has also been applied.
+• Modifier.align() 		- Allows the child to be aligned vertically using Alignment.CenterVertically, Alignment.Top, and Alignment.Bottom values.
+• Modifier.alignBy()		- Aligns a child with other siblings on which the alignBy() modifier has also been applied. Alignment may be performed by baseline or using custom alignment line configurations.
+• Modifier.alignByBaseline() 	- Aligns the baseline of a child with any siblings that have also been configured
+• Modifier.paddingFrom() 	- Allows padding to be added to the alignment line of a child.
+• Modifier.weight() 		- Sets the width of the child relative to the weight values assigned to its siblings. > 0.2f, 0.8f
 
 
 // 6.8 Box (see book/MyApplication9box)
