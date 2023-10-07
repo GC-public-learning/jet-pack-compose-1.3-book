@@ -433,7 +433,7 @@ fun main(args: Array<String>) {
 ```
 
 ### 5.13.5 inheritance
-```
+``` kotlin
 open class MyParentClass { // "open" mandatory to have children
 	var myProperty: Int = 0
 }
@@ -488,45 +488,46 @@ fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // 
 ## 6.2 layout, foundation & Material design components
 
 ### layout
-• Box
-• BoxWithConstraints
-• Column
-• ConstraintLayout
-• Row
+- Box
+- BoxWithConstraints
+- Column
+- ConstraintLayout
+- Row
 
 ### Foundation
-• BaseTextField
-• Canvas
-• Image
-• LazyColumn
-• LazyRow
-• Shape
-• Text
+- BaseTextField
+- Canvas
+- Image
+- LazyColumn
+- LazyRow
+- Shape
+- Text
 
 ### Material design
-• AlertDialog
-• Button
-• Card
-• CircularProgressIndicator
-• DropdownMenu
-• Checkbox
-• FloatingActionButton
-• LinearProgressIndicator
-• ModalDrawer
-• RadioButton
-• Scaffold
-• Slider
-• Snackbar
-• Switch
-• TextField
-• TopAppBar
-• BottomNavigation
+- AlertDialog
+- Button
+- Card
+- CircularProgressIndicator
+- DropdownMenu
+- Checkbox
+- FloatingActionButton
+- LinearProgressIndicator
+- ModalDrawer
+- RadioButton
+- Scaffold
+- Slider
+- Snackbar
+- Switch
+- TextField
+- TopAppBar
+- BottomNavigation
 
 ## 6.3 state (see book/mMyApplication3states for more details))
 
 ### STATE HOISTING
 
 goal : make the child composable stateless in order to make it easier to reuse
+
 so an ancestor or the parent manage the state that can be passed to other child functions
 
 if no state hoisting like that : 
@@ -639,20 +640,21 @@ SlotDemo (
 Common built-in modifiers list
 
 "https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier"
-
-• background 	- Draws a solid colored shape behind the composable.
-• clickable 	- Specifies a handler to be called when the composable is clicked. Also causes a ripple effect when the click is performed.
-• clip 		- Clips the composable content to a specified shape.
-• fillMaxHeight - The composable will be sized to fit the maximum height permitted by its parent.
-• fillMaxSize 	- The composable will be sized to fit the maximum height and width permitted by its parent.
-• fillMaxWidth 	- The composable will be sized to fit the maximum width permitted by its parent.
-• layout 	- Used when implementing custom layout behavior, a topic covered in the chapter entitled “Building Custom Layouts”.
-• offset 	- Positions the composable the specified distance from its current position along the x and y-axis.
-• padding 	- Adds space around a composable. Parameters can be used to apply spacing to all four sides or to specify different padding for each side.
-• rotate 	- Rotates the composable on its center point by a specified number of degrees.
-• scale 	- Increase or reduce the size of the composable by the specified scale factor.
-• scrollable 	- Enables scrolling for a composable that extends beyond the viewable area of the layout in which it is contained.
-• size 		- Used to specify the height and width of a composable. In the absence of a size setting, the composable will be sized to accommodate its content (referred to as wrapping).
+|Modifer	| Explanations |
+| ------ 	| ------ |
+| .background 	| Draws a solid colored shape behind the composable |
+| .clickable 	| Specifies a handler to be called when the composable is clicked. Also causes a ripple effect when the click is performed |
+| .clip 	| Clips the composable content to a specified shape |
+| .fillMaxHeight | The composable will be sized to fit the maximum height permitted by its parent |
+| .fillMaxSize 	| The composable will be sized to fit the maximum height and width permitted by its parent |
+| .fillMaxWidth | The composable will be sized to fit the maximum width permitted by its parent |
+| .layout 	| Used when implementing custom layout behavior, a topic covered in the chapter entitled “Building Custom Layouts” |
+| .offset 	| Positions the composable the specified distance from its current position along the x and y-axis |
+| .padding 	| Adds space around a composable. Parameters can be used to apply spacing to all four sides or to specify different padding for each side |
+| .rotate 	| Rotates the composable on its center point by a specified number of degrees |
+| .scale 	| Increase or reduce the size of the composable by the specified scale factor |
+| .scrollable 	| Enables scrolling for a composable that extends beyond the viewable area of the layout in which it is contained |
+| .size 	| Used to specify the height and width of a composable. In the absence of a size setting, the composable will be sized to accommodate its content (referred to as wrapping) |
 
 modifiers combining
 ``` kotlin
@@ -688,20 +690,20 @@ buildAnnotatedString {
 ```
 
 #### SpanStyle options
-• color
-• fontSize
-• fontWeight
-• fontStyle
-• fontSynthesis
-• fontFamily
-• fontFeatureSettings
-• letterSpacing
-• baselineShift,
-• textGeometricTransform
-• localeList
-• background
-• textDecoration
-• shadow
+- color
+- fontSize
+- fontWeight
+- fontStyle
+- fontSynthesis
+- fontFamily
+- fontFeatureSettings
+- letterSpacing
+- baselineShift,
+- textGeometricTransform
+- localeList
+- background
+- textDecoration
+- shadow
 
 ### 6.6.2 ParaphStyle
 ``` kotlin
@@ -720,10 +722,10 @@ buildAnnotatedString {
 
 #### ParaphStyle options
 ParagraphStyle, on the other hand, applies a style to paragraphs and can be used to modify the following properties:
-• textAlign
-• textDirection
-• lineHeight
-• textIndent
+- textAlign
+- textDirection
+- lineHeight
+- textIndent
 
 ``` kotlin
 val myColors = listOf( /* color list */)
@@ -747,19 +749,21 @@ Row(verticalAlignment = Alignment.CenterVertically){}
 ### Alignment Params
 
 #### ROW
-
-.Top 			- Aligns the content at the top of the "ROW" content area.
-.CenterVertically 	- Positions the content in the vertical center of the "ROW" content area.
-.Bottom 		- Aligns the content at the bottom of the "ROW" content area.
+| Alignment		| Explanations |
+|----------		|--------------|
+| .Top 			| Aligns the content at the top of the "ROW" content area |
+| .CenterVertically 	| Positions the content in the vertical center of the "ROW" content area |
+| .Bottom 		| Aligns the content at the bottom of the "ROW" content area |
 
 When working with the Column composable, the horizontalAlignment parameter is used to configure alignment
 along the horizontal axis. Acceptable values are as follows:
 
 #### COLUMN
-
-.Start 			- Aligns the content at the horizontal start of the "COLUMN" content area.
-.CenterHorizontally 	- Positions the content in the horizontal center of the "COLUMN" content area
-.End 			- Aligns the content at the horizontal end of the "COLUMN" content area.
+| Alignment		| Explanations |
+|-----------		|--------------|
+| .Start 		| Aligns the content at the horizontal start of the "COLUMN" content area |
+| .CenterHorizontally 	| Positions the content in the horizontal center of the "COLUMN" content area |
+| .End 			| Aligns the content at the horizontal end of the "COLUMN" content area |
 
 ### Arrangement
 ``` kotlin
@@ -768,22 +772,28 @@ Column(verticalArrangement = Arrangement.Center){}
 #### Arrangements params
 
 ##### ROW
-.Start 		- Aligns the content at the horizontal start of the "ROW" content area.
-.Center 	- Positions the content in the horizontal center of the "ROW" content area.
-.End 		- Aligns the content at the horizontal end of the "ROW" content area.
+| Arrangement	| Explanations |
+|-------------	|--------------|
+| .Start 	| Aligns the content at the horizontal start of the "ROW" content area |
+| .Center 	| Positions the content in the horizontal center of the "ROW" content area |
+| .End 		| Aligns the content at the horizontal end of the "ROW" content area |
 
 ##### COLUMN
-.Top 		- Aligns the content at the top of the "COLUMN" content area.
-.Center 	- Positions the content in the vertical center of the "COLUMN" content area.
-.Bottom 	- Aligns the content at the bottom of the "COLUMN" content area.
+| Arrangement	| Explanations |
+|-------------	|--------------|
+| .Top 		| Aligns the content at the top of the "COLUMN" content area |
+| .Center 	| Positions the content in the vertical center of the "COLUMN" content area |
+| .Bottom 	| Aligns the content at the bottom of the "COLUMN" content area |
 
 #### ARRANGEMENT SPACING
 ``` kotlin
 Row(horizontalArrangement = Arrangement.SpaceEvenly
 ```
-.SpaceEvenly 	- Children are spaced equally, including space before the first and after the last child.
-.SpaceBetween 	- Children are spaced equally, with no space allocation before the first and after the last child.
-.SpaceAround 	- Children are spaced equally, including half spacing before the first and after the last child.
+| Arrangement	| Explanations |
+|-------------	|--------------|
+| .SpaceEvenly 	| Children are spaced equally, including space before the first and after the last child |
+| .SpaceBetween | Children are spaced equally, with no space allocation before the first and after the last child |
+| .SpaceAround 	| Children are spaced equally, including half spacing before the first and after the last child |
 
 ### Row and Column scope
 ``` kotlin
@@ -793,44 +803,43 @@ Row(modifier = Modifier.height(300.dp)) {
 	TextCell("3", Modifier.align(Alignment.Bottom))
 }
 ```
-• Modifier.align() 		- Allows the child to be aligned horizontally using Alignment.CenterHorizontally, Alignment. Start, and Alignment.End values.
-• Modifier.alignBy()		- Aligns a child horizontally with other siblings on which the alignBy() modifier has also been applied.
-• Modifier.align() 		- Allows the child to be aligned vertically using Alignment.CenterVertically, Alignment.Top, and Alignment.Bottom values.
-• Modifier.alignBy()		- Aligns a child with other siblings on which the alignBy() modifier has also been applied. Alignment may be performed by baseline or using custom alignment line configurations.
-• Modifier.alignByBaseline() 	- Aligns the baseline of a child with any siblings that have also been configured
-• Modifier.paddingFrom() 	- Allows padding to be added to the alignment line of a child.
-• Modifier.weight() 		- Sets the width of the child relative to the weight values assigned to its siblings. > 0.2f, 0.8f
+| Modifier| Explanations |
+|-------------	|--------------|
+| .align() 		| Allows the child to be aligned horizontally using Alignment.CenterHorizontally, Alignment. Start, and Alignment.End values |
+| .alignBy()		| Aligns a child horizontally with other siblings on which the alignBy() modifier has also been applied |
+| .align() 		| Allows the child to be aligned vertically using Alignment.CenterVertically, Alignment.Top, and Alignment.Bottom values |
+| .alignBy()		| Aligns a child with other siblings on which the alignBy() modifier has also been applied. Alignment may be performed by baseline or using custom alignment line configurations |
+| .alignByBaseline() 	| Aligns the baseline of a child with any siblings that have also been configured |
+| .paddingFrom() 	| Allows padding to be added to the alignment line of a child |
+| .weight() 		| Sets the width of the child relative to the weight values assigned to its siblings. > 0.2f, 0.8f |
 
 
-// 6.8 Box (see book/MyApplication9box)
------------------------------------------
-// with box, all chids are in a stack and all displayed by default from the top left. the last item is on the top
-// Box alignment
-// --------------
-• Alignment.TopStart
-• Alignment.TopCenter
-• Alignment.TopEnd
-• Alignment.CenterStart
-• Alignment.Center
-• Alignment.CenterEnd
-• Alignment.BottomCenter
-• Alignment.BottomEnd
-• Alignment.BottomStart
+## 6.8 Box (see book/MyApplication9box)
+ with box, all chids are in a stack and all displayed by default from the top left. the last item is on the top
+ 
+### Box alignment
+- TopStart
+- TopCenter
+- TopEnd
+- CenterStart
+- Center
+- CenterEnd
+- BottomCenter
+- BottomEnd
+- BottomStart
 
-// BoxScope
-// ----------
-• align() - Aligns the child within the Box content area using the specified Alignment value.
-• matchParentSize() - Sizes the child on which the modifier is applied to match the size of the parent Box.
+### BoxScope
+-  align() : Aligns the child within the Box content area using the specified Alignment value.
+- matchParentSize() : Sizes the child on which the modifier is applied to match the size of the parent Box.
 
-// Modifier.clip
-// ---------------
-.clip(CircleShape)
-.clip(RoundedCornerShape(30.dp))
-.clip(CutCornerShape(30.dp))
+### Modifier.clip
+- clip(CircleShape)
+- clip(RoundedCornerShape(30.dp))
+- clip(CutCornerShape(30.dp))
 
 
-// 6.9 Layout modifier (see book/book/MyApplication10LayoutModifier
----------------------------------------------------------------------
+## 6.9 Layout modifier (see book/book/MyApplication10LayoutModifier
+``` kotlin
 // declaration
 fun Modifier.exampleLayout(fraction: Float, increaseY : (Int) -> Int = {value : Int -> 0})
         = layout { measurable, constraints ->
@@ -856,9 +865,10 @@ Box(modifier = Modifier.size(120.dp, 80.dp)) {
             Modifier.exampleLayout(0.25f, increasY).background(Color.Green)
         )
 }
+```
 
-// 6.10 custom layout (see book/MyApplication11CustomLayout)
-----------------------------------------------------------------
+## 6.10 custom layout (see book/MyApplication11CustomLayout)
+``` kotlin
 @Composable
 fun DoNothingLayout(
     modifier: Modifier = Modifier,
@@ -892,48 +902,49 @@ DoNothingLayout(Modifier.padding(8.dp)) {
     Text(text = "line 3")
     Text(text = "line 4")
 }
+```
 
-// 6.11 Constraint layout (see book/MyApplication12constraintlayout)
----------------------------------------------------------------------
----------------------------------------------------------------------
+## 6.11 Constraint layout (see book/MyApplication12constraintlayout)
 
-// 6.11.1 Constraints
---------------------
+### 6.11.1 Constraints
 
-// 6.11.2 Margins
-------------------
-// is the last constriant setup and has highest priority
+### 6.11.2 Margins
+is the last constriant setup and has highest priority
+``` kotlin
 MyButton(
     text = "Button 1",
     Modifier.constrainAs(button1){
         top.linkTo(parent.top, margin = 20.dp)
 })
+```
 
 
-// 6.11.3 Opposing Constraints
-------------------------------- 
-// spread the free space side sizes equaly between oposites constraints 
+### 6.11.3 Opposing Constraints
+spread the free space side sizes equaly between oposites constraints
+``` kotlin
 start.linkTo(parent.start, margin = 30.dp) // can be mixed with margin
 end.linkTo(parent.end)
+```
 
 
-// 6.11.4 Constraint Bias
----------------------------
-// spread the free space side size following a percentage
-// used for responsive designs instead of margins
+### 6.11.4 Constraint Bias
+spread the free space side size following a percentage
+
+used for responsive designs instead of margins
+``` kotlin
 linkTo(parent.top, parent.bottom, bias = 0.9f) // bias assigned to the left/top spaces and rest to the right/bottom
+```
 
-// 6.11.5 Chains
-------------------
-// vertical or horizontal group of objects
+### 6.11.5 Chains
+vertical or horizontal group of objects
 
-// 6.11.6 Chain Styles 
------------------------
-// spread Chain 		> spread the space equaly between the elements
-// Spread inside Chain 	> //			//						//	and no space on the sides
-// Weighted Chain 		> width or eight of each element based to one element proportion
-// packed Chains		> elements are packed without any space
+#### Chain Styles 
+- spread Chain : spread the space equaly between the elements
+- Spread inside Chain : spread the space equaly between the elements and no space on the sides
+- Weighted Chain : width or eight of each element based to one element proportion
+- packed Chains : elements are packed without any space
 
+``` kotlin
 Box(Modifier.size(width = 200.dp, height = 200.dp)) {
 	ConstraintLayout(
 	    Modifier
@@ -967,11 +978,11 @@ Box(Modifier.size(width = 200.dp, height = 200.dp)) {
 	    )
 	}
 }
+````
+### 6.11.6 Guidelines
+invisible element with which the constraints can be setup
 
-// 6.11.7 Guidelines
----------------------
-// invisible element with which the constraints can be setup
-
+``` kotlin
 // assigment
 val guide = createGuidelineFromTop(offset = 60.dp) // horizontal guideline (measure)
 val guide = createGuidelineFromStart(fraction = .10f) // vertical guideline (percent)
@@ -980,6 +991,7 @@ val guide = createGuidelineFromStart(fraction = .10f) // vertical guideline (per
  Modifier.constrainAs(button1) {
     start.linkTo(guide) // use of guideline
 }
+```
 
 // 6.11.8 Barriers & Dimensions
 --------------------------------
