@@ -30,7 +30,7 @@ More memory can be alocated for playing virtual devices
 - possible to make the preview interactive on top left of the preview
 
 # 4) avd 
-- possible to setup it in order to open it outside the aaplication via the settings/tools/emulator
+- possible to setup it in order to open it outside the aplication via the settings/tools/emulator
 - emulator -list-avds : display all avds available as long as the variable "ANDROID_AVD_HOME" is setup with its path in ".bashrc"
 - a virtual device can be open by the command : emulator -avd virtualDeviceName
 
@@ -47,7 +47,7 @@ println("""
 )
 ```
 
-with trimargin() >   the margin is reomved if "|" is used ("|" can be replaced by another char. ex : trimargin("#")
+with trimargin() >   the margin is removed if "|" is used ("|" can be replaced by another char. ex : trimargin("#")
 ``` kotlin
 println("""
     | line 1 without margin
@@ -91,7 +91,7 @@ val var5 = var4?.length // executed only if var4 is not null
 val var4: String? = null
 val var5 = var4!!.length // ALLOWED (NOT-NULL ASSERTION > remove all nullable restrictions)
 
-var6?.let {		// executed only if var6 is not null
+var6?.let {	// executed only if var6 is not null
 	val result = firstNumber.times(it)
 	print(result)
 }
@@ -101,7 +101,7 @@ return var7 ?: "the var is null" // ?: = elvis operator (return a specific value
 
 ## 5.4 lateinit
 ``` kotlin
-lateinit var var1 : String // if assignationlater
+lateinit var var1 : String // if assignation later
 
 if (::var1.isInitialized) { // verifiy the init of the var
 print("My Name is " + myName)
@@ -109,7 +109,7 @@ print("My Name is " + myName)
 ```
 
 ## 5.5 :: (reflection)
-1st : in build.gradle insert line :
+1st : in "build.gradle" insert line :
 ``` groovy
 implementation(kotlin("reflect"))
 ```
@@ -138,22 +138,22 @@ val var1 = getResultFromFun(var2) as? String  // return null if the cast cannot 
 
 ## 5.7 operators
 ``` kotlin
-+ - * / % 		// arithmetic operators
++ - * / % // arithmetic operators
 += -= *= /= %= 	// Augmented assignment operators
 x++ x-- ++x --x // incrementation
 == < > <= >= != // equality operators
-&& || ! 		// Boolean logical operators
-x..y 			// range operator
+&& || ! // Boolean logical operators
+x..y // range operator
 ```
 
 ## 5.8 bitwise operators
 ``` kotlin
-var1.inv()		// invert 1 and 0 of the binary value
-var1.and(var2)	// AND operation between all the binary numbers of the same level of 2 vars
-var1.or(var2)	// OR operation between all the binary numbers of the same level of 2 vars
-var1.xor(var2)	// XOR operation between all the binary numbers of the same level of 2 vars
-var1.shl(2)		// left shift : 101 -> 10100 (the gap is 2 & the 0 replace the left empty spa)
-var1.shr(2)		// right shift : 101 -> 001 (the gap is 2 & some right values are removed)
+var1.inv() // invert 1 and 0 of the binary value
+var1.and(var2) // AND operation between all the binary numbers of the same level of 2 vars
+var1.or(var2) // OR operation between all the binary numbers of the same level of 2 vars
+var1.xor(var2) // XOR operation between all the binary numbers of the same level of 2 vars
+var1.shl(2)	// left shift : 101 -> 10100 (the gap is 2 & the 0 replace the left empty spaces)
+var1.shr(2)	// right shift : 101 -> 001 (the gap is 2 & some right values are removed)
 ```
 
 ## 5.9 loops
@@ -204,7 +204,8 @@ break // end the loop
 continue // redo loop from the top by bypassing the rest
 ```
 
-### 5.9.5 label // specify the loop we want to break
+### 5.9.5 label
+specify the loop we want to break
 ``` kotlin
 outerloop@ for (i in 1..100) {
 	println("Outer loop i = $i")
@@ -247,8 +248,7 @@ fun buildMessageFor(name: String = "Customer", count: Int = 0): String { // defa
 return("$name, you are customer number $count")
 }
 
-fun displayStrings(vararg strings: String) // vararg when number of params is unknown
-{
+fun displayStrings(vararg strings: String) { // vararg when number of params is unknown
 	for (string in strings) {
 		println(string)
 	}
