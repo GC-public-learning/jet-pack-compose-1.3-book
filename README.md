@@ -993,10 +993,9 @@ val guide = createGuidelineFromStart(fraction = .10f) // vertical guideline (per
 }
 ```
 
-// 6.11.8 Barriers & Dimensions
---------------------------------
-// impede some elements to overlap on other ones when they are modified
-
+### 6.11.7 Barriers & Dimensions
+impede some elements to overlap on other ones when they are modified
+``` kotlin
 // assignment
 val barrier = createEndBarrier(button1, button2) // vertical barrier
 
@@ -1007,18 +1006,18 @@ Modifier.constrainAs(button3) {
     width = Dimension.fillToConstraints // dimension
     height = Dimension.fillToConstraints // dimension
 }
+```
 
-Dimension. ...
+| Dimension			| Explanations |
+|-----------			|--------------|
+| .preferredWrapContent 	| The size of the composable is dictated by the content it contains (i.e. text or graphics) subject to prevailing constraints |
+| .wrapContent 			| The size of the composable is dictated by the content it contains regardless of revailing constraints |
+| .fillToConstraints 		| Allows the composable to be sized to fill the space allowed by the prevailing constraints |
+| .preferredValue 		| The composable is fixed to specified dimensions subject to the prevailing constraints. |
+| .value			| The composable is fixed to specified dimensions regardless of the prevailing constraints |
 
-.preferredWrapContent 	- The size of the composable is dictated by the content it contains (i.e. text or graphics) subject to prevailing constraints.
-.wrapContent 			- The size of the composable is dictated by the content it contains regardless of revailing constraints
-.fillToConstraints 		- Allows the composable to be sized to fill the space allowed by the prevailing constraints.
-.preferredValue 		- The composable is fixed to specified dimensions subject to the prevailing constraints.
-.value 	Modifier.size(100.dp)				- The composable is fixed to specified dimensions regardless of the prevailing constraints.
-
-// 6.11.9 Constraint set
--------------------------
-
+### 6.11.8 Constraint set
+``` kotlin
 // declaration
 private fun myConstraintSet(margin: Dp) : ConstraintSet
     = ConstraintSet {
@@ -1048,11 +1047,11 @@ Box(Modifier.size(width = 200.dp, height = 200.dp)) {
 
 
 }
+```
 
-// 6.12 Intrinsic size (see book/MyApplication13intrinsicsize)
----------------------------------------------------------------
-// the parent is allowed to measure its children and makes its size in function
-
+## 6.12 Intrinsic size (see book/MyApplication13intrinsicsize)
+The parent is allowed to measure its children and makes its size in function
+``` kotlin
 Column(
     Modifier
     .width(200.dp)
@@ -1078,94 +1077,77 @@ Column(
 	}
 	MyTextField(text = textState, onTextChange = onTextChange)
 }
+```
 
-// 6.13 Coroutines (assynchronous programming) (see book/MyApplication14coroutines)
-------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------
+## 6.13 Coroutines (assynchronous programming) (see book/MyApplication14coroutines)
 
-// built-in scopes
--------------------
-// specific group of routines in which each coroutine can be setup
+### 6.13.1 built-in scopes
+specific group of routines in which each coroutine can be setup
 
-- GlobalScope /*GlobalScope is used to launch top-level coroutines which are tied to the entire lifecycle of the
+- GlobalScope : GlobalScope is used to launch top-level coroutines which are tied to the entire lifecycle of the
 application. Since this has the potential for coroutines in this scope to continue running when not needed
 (for example when an Activity exits) use of this scope is not recommended for use in Android applications.
-Coroutines running in GlobalScope are considered to be using unstructured concurrency.*/
+Coroutines running in GlobalScope are considered to be using unstructured concurrency.
 
-- ViewModelScope /*Provided specifically for use in ViewModel instances when using the Jetpack architecture
+- ViewModelScope : Provided specifically for use in ViewModel instances when using the Jetpack architecture
 ViewModel component. Coroutines launched in this scope from within a ViewModel instance are automatically
-canceled by the Kotlin runtime system when the corresponding ViewModel instance is destroyed.*/
+canceled by the Kotlin runtime system when the corresponding ViewModel instance is destroyed.
 
-- LifecycleScope /*Every lifecycle owner has associated with it a LifecycleScope. This scope is canceled when
+- LifecycleScope : Every lifecycle owner has associated with it a LifecycleScope. This scope is canceled when
 the corresponding lifecycle owner is destroyed making it particularly useful for launching coroutines from
-within composables and activities.*/
+within composables and activities.
 
+``` kotlin
 val coroutineScope = rememberCoroutineScope() // declare the coroutine scope
 
 coroutineScope.cancel() // cancel all coroutines from the scope
+```
 
-// Suspend functions
-----------------------
-// contains code of coroutine
-
+### 6.13.2 Suspend functions
+contains code of coroutine
+``` kotlin
 suspend fun mySlowTask() { 
 	// Perform long-running task here
 }
+```
 
-// Coroutine dispatchers
---------------------------
-/* Kotlin maintains threads for different types of asynchronous activity and, when launching a coroutine, you have
-the option to specify a specific dispatcher from the following options: */
+### 6.13.3 Coroutine dispatchers
+Kotlin maintains threads for different types of asynchronous activity and, when launching a coroutine, you have
+the option to specify a specific dispatcher from the following options: 
 
-- Dispatchers.Main // Runs the coroutine on the main thread and is suitable for corout
-- Dispatchers.IO –// Recommended for coroutines that perform network, disk, or database operations.
-- Dispatchers.Default // Intended for CPU-intensive tasks such as sorting data or performing complex
-calculations.
+| Dispatcher		| Explanations |
+|------------		|--------------|
+| .Main 		| Runs the coroutine on the main thread and is suitable for corout |
+| .IO			| Recommended for coroutines that perform network, disk, or database operations |
+| .Default 	| Intended for CPU-intensive tasks such as sorting data or performing complex calculations |
 
+``` kotlin
 coroutineScope.launch(Dispatchers.IO) {
 	performSlowTask()
 }
+```
 
-// coroutine builders
-----------------------
-- launch /* Starts a coroutine without blocking the current thread and does not return a result to the caller. Use
-this builder when calling a suspend function from within a traditional function, and when the results of the
-coroutine do not need to be handled (sometimes referred to as “fire and forget” coroutines).*/
+### 6.13.3 Coroutine builders
+| Builder	| Explanations |
+|---------	|--------------|
+| .launch 	| Starts a coroutine without blocking the current thread and does not return a result to the caller. Use this builder when calling a suspend function from within a traditional function, and when the results of the coroutine do not need to be handled (sometimes referred to as “fire and forget” coroutines) |
+| .async 	| Starts a coroutine and allows the caller to wait for a result using the await() function without blocking the current thread. Use async when you have multiple coroutines that need to run in parallel. The async builder can only be used from within another suspend function |
+| .withContext 	| This allows a coroutine to be launched in a different context from that used by the parent coroutine. A coroutine running using the Main context could, for example, launch a child coroutine in the default context using this builder. The withContext builder also provides a useful alternative to async when returning results from a coroutine. |
+| .coroutineScope | The coroutineScope builder is ideal for situations where a suspend function launches multiple coroutines that will run in parallel and where some action needs to take place only when all the coroutines reach completion. If those coroutines are launched using the coroutineScope builder, the calling function will not return until all child coroutines have completed. When using coroutineScope, a failure in any of the coroutines will result in the cancellation of all other coroutines |
+| .supervisorScope | Similar to the coroutineScope outlined above, with the exception that a failure in one child does not result in cancellation of the other coroutines |
+| runBlocking | Starts a coroutine and blocks the current thread until the coroutine reaches completion. This is typically the opposite of what is wanted from coroutines but is useful for testing code and integrating legacy code and libraries otherwise to be avoided |
 
-- async /*Starts a coroutine and allows the caller to wait for a result using the await() function without blocking
-the current thread. Use async when you have multiple coroutines that need to run in parallel. The async
-builder can only be used from within another suspend function. */
+### 6.13.4 jobs
+instances returned by the builders
 
-- withContext /* This allows a coroutine to be launched in a different context from that used by the parent
-coroutine. A coroutine running using the Main context could, for example, launch a child coroutine in the
-Default context using this builder. The withContext builder also provides a useful alternative to async when
-returning results from a coroutine. */
-
-- coroutineScope /* The coroutineScope builder is ideal for situations where a suspend function launches
-multiple coroutines that will run in parallel and where some action needs to take place only when all the
-coroutines reach completion. If those coroutines are launched using the coroutineScope builder, the calling
-function will not return until all child coroutines have completed. When using coroutineScope, a failure in
-any of the coroutines will result in the cancellation of all other coroutines. */
-
-- supervisorScope /* Similar to the coroutineScope outlined above, with the exception that a failure in one child
-does not result in cancellation of the other coroutines. */
-
-- runBlocking /* Starts a coroutine and blocks the current thread until the coroutine reaches completion. This
-is typically the opposite of what is wanted from coroutines but is useful for testing code and integrating legacy
-code and libraries. Otherwise to be avoided. */
-
-// jobs
------------
-// instances returned by the builders
-
-// job properties
+##### job properties
 isActive, isCompleted, and isCancelled
 
-// job methods
+#### job methods
 cancell(), canellChildren(), join(), cancelAndJoin()
 
-// exemples
----------------
+exemples
+``` kotlin
 @Composable
 fun MainScreen() {
     val coroutineScope = rememberCoroutineScope()
@@ -1199,11 +1181,12 @@ suspend fun performSlowTask() {
     delay(5000) // simulates long-running task
     println("performSlowTask after")
 }
+```
 
-// Chanels
---------------
-// send data from one couroutine to another one
+6.13.5 Chanels
+Send data from one couroutine to another one
 
+``` kotlin
 suspend fun performTask1(channel: Channel<Int>) {
     (1..6).forEach {
         channel.send(it) // "it" is sent = nums from 1 to 6
@@ -1237,15 +1220,14 @@ fun MainScreen() {
         MyButton2(coroutineScope = coroutineScope, channel = channel)
     }
 }
+```
 
 
-// side effects
-------------------
-SideEffect // executed and relaunch on every recomposotion of the parent composable
-LaunchedEffect(key1, key2) // works with keys (params) > same like sideEffect but if a param is modified, the current
-// coroutine is cancelled and a new one is launched
+### 6.13.5side effects
+- SideEffect : executed and relaunch on every recomposotion of the parent composable
+- LaunchedEffect(key1, key2) : works with keys (params) > same like sideEffect but if a param is modified, the current  coroutine is cancelled and a new one is launched
 
-
+``` kotlin
 // declaration of suspend function (wathever the code inside)
 suspend fun performSlowTask2() {
     println("performSlowTask 2 before") // see in Logcat > filter: System.out
@@ -1271,3 +1253,4 @@ fun MainScreen() {
         coroutineScope.launch { performSlowTask3() }
     }
 }
+```
