@@ -256,7 +256,7 @@ fun displayStrings(vararg strings: String) { // vararg when number of params is 
 displayStrings("one", "two", "three", "four")
 ```
 
-### 5.12.1 lambda (see compose learning/lambda)
+### 5.12.1 lambda (see book/HS/lambda)
 ``` kotlin
 val sayHello = { println("Hello") }
 sayHello()
@@ -413,7 +413,7 @@ class ClassA {
 ### 5.13.4 Companion
 ``` kotlin
 // properties and functions from the companion are reachable from all instances of the class 
-// & also from directly from the Class without instanciation like "Static" contents
+// & also directly from the Class without instanciation like "Static" contents
 
 class MyClass {
 	fun showCount() {
@@ -466,26 +466,7 @@ class MySubClass : MyParentClass {
 
 # 6) Compose
 
-## 6.1 Stateful vs Stateless (see book/mMyApplication3states for more details)
-``` kotlin
-@Composable
-fun DemoScreen() { // stateful
-	var sliderPosition by remember { mutableStateOf(20f) }
-	.
-	.
-}
-@Composable
-fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // stateless
-	Slider(
-		modifier = Modifier.padding(10.dp),
-		valueRange = 20f..40f,
-		value = sliderPosition,
-		onValueChange = onPositionChange
-	)
-}
-```
-
-## 6.2 layout, foundation & Material design components
+## 6.1 layout, foundation & Material design components
 
 ### layout
 - Box
@@ -521,6 +502,25 @@ fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // 
 - TextField
 - TopAppBar
 - BottomNavigation
+
+## 6.2 Stateful vs Stateless (see book/mMyApplication3states for more details)
+``` kotlin
+@Composable
+fun DemoScreen() { // stateful
+	var sliderPosition by remember { mutableStateOf(20f) }
+	.
+	.
+}
+@Composable
+fun DemoSlider(sliderPosition: Float, onPositionChange : (Float) -> Unit ) { // stateless
+	Slider(
+		modifier = Modifier.padding(10.dp),
+		valueRange = 20f..40f,
+		value = sliderPosition,
+		onValueChange = onPositionChange
+	)
+}
+```
 
 ## 6.3 state (see book/mMyApplication3states for more details))
 
