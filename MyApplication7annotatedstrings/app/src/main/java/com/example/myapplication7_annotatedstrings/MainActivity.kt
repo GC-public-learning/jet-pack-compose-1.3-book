@@ -93,7 +93,8 @@ fun ParaString() {
             append("""This is some text that is indented more on the first lines
                 |than the rest of the lines. It also has an increased line height.""".trimMargin())
 
-        } // when """ """ is used "|" has to be used on each other lines to not take in account the spaces before
+        } // With .triMargin(), when """ """ is used "|" has to be used on each other lines 
+        // to not take in account the spaces before
         withStyle(style = ParagraphStyle(textAlign = TextAlign.End)) {
             append("text that is aligned on the right.")
         }
