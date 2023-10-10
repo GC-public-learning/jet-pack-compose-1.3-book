@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     Column {
-
         Box(
             contentAlignment = Alignment.CenterEnd,
             modifier = Modifier
@@ -89,14 +88,14 @@ fun MainScreen() {
             Box(
                 Modifier
                     .size(150.dp)
-                    .clip(RoundedCornerShape(30.dp))
+                    .clip(RoundedCornerShape(20.dp))
                     .background(Color.Red))
         }
         Spacer(modifier = Modifier.height(10.dp))
         Box(
             Modifier
                 .size(150.dp)
-                .clip(CutCornerShape(30.dp))
+                .clip(CutCornerShape(20.dp))
                 .background(Color.Green))
     }
 }

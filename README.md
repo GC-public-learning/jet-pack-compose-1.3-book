@@ -326,7 +326,7 @@ class BankAccount {
 	var accountBalance: Double = 0.0
 	var accountNumber: Int = 0
 
-	fun displayBalance()
+	fun displayBalance()git
 	{
 		println("Number $accountNumber")
 		println("Current balance is $accountBalance")
@@ -844,7 +844,7 @@ Row(modifier = Modifier.height(300.dp)) {
 fun Modifier.exampleLayout(fraction: Float, increaseY : (Int) -> Int = {value : Int -> 0})
         = layout { measurable, constraints ->
         	// measurable = child
-        	// constraints = max and min widt and eight
+        	// constraints = max and min width and height
         val placeable = measurable.measure(constraints) // child with constraints
         val x = (placeable.width * fraction).roundToInt()
 
