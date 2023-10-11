@@ -53,10 +53,13 @@ fun MainScreen() {
     val channel = Channel<Int>()
 
     LaunchedEffect(key1 = Unit) {
-        coroutineScope.launch { performSlowTask2() }
+        coroutineScope.launch(Dispatchers.Main) { performSlowTask2() }
+        // Dispatchers.Main (not mandatory) for lightweight tasks (ex : ui)
+        // also possible : Dispatchers.IO (database or disk usage) & Dispatchers.Default (highWeight tasks)
     }
     SideEffect {
         coroutineScope.launch { performSlowTask3() }
+        // executed before performSlowTask2() due to the dispatcher. why ?
     }
 
     Column() {

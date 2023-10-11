@@ -160,30 +160,45 @@ var1.shr(2)	// right shift : 101 -> 001 (the gap is 2 & some right values are re
 
 ### 5.9.1 for
 ``` kotlin
-for (index in 1..5) { // with ranges
-println("Value of index is $index")
+for(index in 1..5) { // with ranges
+	println("Value of index is $index")
 }
 
-for (index in "Hello") { // for strings
-println("Value of index is $index")
+for(index in "Hello") { // for strings
+	println("Value of index is $index")
 }
 
-for (index in 100 downTo 90) { // backward order
-print("$index.. ")
+for(index in 100 downTo 90) { // backward order
+	print("$index.. ")
 }
 
-for (index in 1 until 10) { // doesn't include the 10
-print("$index.. ")
+for(index in 1 until 10) { // doesn't include the 10
+	print("$index.. ")
 }
 
-for (index in 0 until 100 step 10) { // setup increment index
-print("$index.. ")
+for(index in 0 until 100 step 10) { // setup increment index
+	print("$index.. ")
+}
+```
+
+### other ways to use ranges
+``` kotlin
+(1..5).forEach {
+	println(it)
+}
+(1..5).forEach { num -> // same forEach fun than above but with items from the list named
+	println(num)
+}
+
+
+repeat(5) {
+	println("Hello repeat")
 }
 ```
 
 ### 5.9.2 while
 ``` kotlin
-while (var1 < 100 ) {
+while(var1 < 100 ) {
 	myCount++
 	println(myCount)
 }
@@ -207,7 +222,7 @@ continue // redo loop from the top by bypassing the rest
 ### 5.9.5 label
 specify the loop we want to break
 ``` kotlin
-outerloop@ for (i in 1..100) {
+outerloop@ for(i in 1..100) {
 	println("Outer loop i = $i")
 	for (j in 1..100) {
 		println("Inner loop j = $j")
@@ -218,7 +233,7 @@ outerloop@ for (i in 1..100) {
 
 ## 5.10 if
 ``` kotlin
-if (x == 10) println("x is 10")
+if(x == 10) println("x is 10")
 	else if (x == 9) println("x is 9")
 		else if (x == 8) println("x is 8")
 			else println("x is less than 8")
@@ -326,8 +341,7 @@ class BankAccount {
 	var accountBalance: Double = 0.0
 	var accountNumber: Int = 0
 
-	fun displayBalance()git
-	{
+	fun displayBalance() {
 		println("Number $accountNumber")
 		println("Current balance is $accountBalance")
 	}
@@ -1117,7 +1131,7 @@ the option to specify a specific dispatcher from the following options:
 
 | Dispatcher		| Explanations |
 |------------		|--------------|
-| .Main 		| Runs the coroutine on the main thread and is suitable for corout |
+| .Main 		| Runs the coroutine on the main thread and is suitable for coroutines that need to make changes to the UI and as a general-purpose option for performing lightweight tasks. |
 | .IO			| Recommended for coroutines that perform network, disk, or database operations |
 | .Default 	| Intended for CPU-intensive tasks such as sorting data or performing complex calculations |
 
