@@ -1157,8 +1157,8 @@ instances returned by the builders
 ##### job properties
 isActive, isCompleted, and isCancelled
 
-#### job methods
-cancell(), canellChildren(), join(), cancelAndJoin()
+##### job methods
+cancell(), cancellChildren(), join(), cancelAndJoin()
 
 exemples
 ``` kotlin
@@ -1197,7 +1197,7 @@ suspend fun performSlowTask() {
 }
 ```
 
-6.13.5 Chanels
+### 6.13.5 Chanels
 Send data from one couroutine to another one
 
 ``` kotlin
@@ -1237,7 +1237,7 @@ fun MainScreen() {
 ```
 
 
-### 6.13.5side effects
+### 6.13.6 side effects
 - SideEffect : executed and relaunch on every recomposotion of the parent composable
 - LaunchedEffect(key1, key2) : works with keys (params) > same like sideEffect but if a param is modified, the current  coroutine is cancelled and a new one is launched
 
@@ -1267,4 +1267,70 @@ fun MainScreen() {
         coroutineScope.launch { performSlowTask3() }
     }
 }
+```
+## 6.14 Scrollable row & column lists (see book/MyApplication15rowandcolumnlists)
+
+``` kotlin
+@Composable
+fun ColumnList() {
+    val scrollState = rememberScrollState() // scrollState
+    val coroutineScope = rememberCoroutineScope() // to setup special options for the scroll list
+
+    Column {
+        Row {
+            Button(
+                onClick = { coroutineScope.launch { scrollState.animateScrollTo(0) } },
+                modifier = Modifier
+//                    .fillMaxWidth(0.5f)
+                    .weight(0.5f)
+                    // other way to use the available space > each brother's size is setup in function of the other ones
+                    .padding(2.dp)
+            ) {
+                Text(text = "Top")
+            }
+            Button(
+                onClick = { coroutineScope.launch { scrollState.animateScrollTo(scrollState.maxValue) } },
+                modifier = Modifier
+                    .weight(0.5f)
+                    .padding(2.dp)
+            ) {
+                Text(text = "End")
+            }
+        }
+        Column(Modifier.verticalScroll(scrollState)) { // use of scrollState
+            repeat(500) {
+                Text(
+                    text = "Item $it",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(5.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RowList() {
+    val scrollState = rememberScrollState()
+    Row(
+        Modifier.horizontalScroll(scrollState)
+    ) {
+        repeat(50) {
+            Text(
+                text = "$it",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(5.dp)
+            )
+
+        }
+    }
+}
+```
+
+## 6.15 Lazy lists (see book/MyApplication16lazylists)
+
+build.gradle setup
+``` groovy
+compileSdk = 34
+implementation("io.coil-kt:coil:2.4.0")
 ```
