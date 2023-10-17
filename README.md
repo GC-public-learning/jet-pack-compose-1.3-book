@@ -1331,17 +1331,75 @@ fun RowList() {
 
 bonus : image loading library : https://coil-kt.github.io/coil/
 
-build.gradle setup
+build.gradle setup (for the bonus)
 ``` groovy
 compileSdk = 34
 implementation("io.coil-kt:coil:2.4.0")
 ```
 
-AndroidManifest setup : adding permissions for internet
+AndroidManifest setup : adding permissions for internet (for the bonus)
 ``` xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
  <uses-permission android:name="android.permission.INTERNET" />
 ```
+car_list.xml file content > file copied in res/values/ project folder
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="car_array">
+        <item>Buick Century</item>
+        <item>Buick LaSabre</item>
+        <item>Buick Roadmaster</item>
+        <item>Buick Special Riviera</item>
+        <item>Cadillac Couple De Ville</item>
+        <item>Cadillac Eldorado</item>
+        <item>Cadillac Fleetwood</item>
+        <item>Cadillac Series 62</item>
+        <item>Cadillac Seville</item>
+        <item>Ford Fairlane</item>
+        <item>Ford Galaxie 500</item>
+        <item>Ford Mustang</item>
+        <item>Ford Thunderbird</item>
+        <item>GMC Le Mans</item>
+        <item>Plymouth Fury</item>
+        <item>Plymouth GTX</item>
+        <item>Plymouth Roadrunner</item>
+    </string-array>
+</resources>
+```
 
+Only lazy list code, other functions has been created in order to displays the downloaded images wrapped in cards with some info > see the App 16
+
+the xml file is converted to a "Array<String>?" on the beggining of the "onCreate" function
+``` kotlin
+itemArray = resources.getStringArray(R.array.car_array) // call of the array string xml
+```
+then used as param of the Mainscreen function and casted as Array<out String>
+``` kotlin
+MainScreen(itemArray = itemArray as Array<out String>)
+```
+
+``` kotlin
+@Composable
+fun MainScreen(itemArray: Array<out String>) {
+    val context = LocalContext.current // in order to generate a toast in the good screen
+
+    val onListItemClick = { text : String ->
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    LazyColumn{
+        items(itemArray) {model ->
+            MyListItem(
+                item = model,
+                onItemClick = onListItemClick
+                )
+        }
+    }
+}
+```
