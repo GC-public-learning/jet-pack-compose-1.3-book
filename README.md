@@ -1329,8 +1329,19 @@ fun RowList() {
 
 ## 6.15 Lazy lists (see book/MyApplication16lazylists)
 
+bonus : image loading library : https://coil-kt.github.io/coil/
+
 build.gradle setup
 ``` groovy
 compileSdk = 34
 implementation("io.coil-kt:coil:2.4.0")
 ```
+
+AndroidManifest setup : adding permissions for internet
+``` xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+ <uses-permission android:name="android.permission.INTERNET" />
+```
+
