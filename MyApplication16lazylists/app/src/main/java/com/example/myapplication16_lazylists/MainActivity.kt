@@ -56,27 +56,27 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(itemArray: Array<out String>) {
     val context = LocalContext.current // in order to generate a toast in the good screen
 
-    val onListItemClick = { text : String ->
+    val onListItemClick = { text: String ->
         Toast.makeText(
             context,
             text,
             Toast.LENGTH_SHORT
         ).show()
     }
-    LazyColumn{
-        items(itemArray) {model ->
+    LazyColumn {
+        items(itemArray) { model ->
             MyListItem(
                 item = model,
                 onItemClick = onListItemClick
-                )
+            )
         }
     }
 }
 
 @Composable
 fun ImageLoader(item: String) {
-    val url = "https://www.ebookfrenzy.com/book_examples/car_logos/" + item.
-    substringBefore(" ") + "_logo.png"
+    val url =
+        "https://www.ebookfrenzy.com/book_examples/car_logos/" + item.substringBefore(" ") + "_logo.png"
     Image(
         painter = rememberAsyncImagePainter(url),
         contentDescription = "car image",
@@ -86,7 +86,7 @@ fun ImageLoader(item: String) {
 }
 
 @Composable
-fun MyListItem(item: String, onItemClick:(String) -> Unit) {
+fun MyListItem(item: String, onItemClick: (String) -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background
@@ -104,7 +104,7 @@ fun MyListItem(item: String, onItemClick:(String) -> Unit) {
                 text = item,
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(8.dp)
-                )
+            )
         }
     }
 }

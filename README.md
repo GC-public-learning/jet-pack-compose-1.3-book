@@ -1372,11 +1372,11 @@ car_list.xml file content > file copied in res/values/ project folder
 
 Only lazy list code, other functions has been created in order to displays the downloaded images wrapped in cards with some info > see the App 16
 
-the xml file is converted to a "Array<String>?" on the beggining of the "onCreate" function
+the xml file is converted to an "Array\<String>?" on the beggining of the "onCreate" function
 ``` kotlin
 itemArray = resources.getStringArray(R.array.car_array) // call of the array string xml
 ```
-then used as param of the Mainscreen function and casted as Array<out String>
+then used as param of the Mainscreen function and casted as "Array\<out String>""
 ``` kotlin
 MainScreen(itemArray = itemArray as Array<out String>)
 ```
