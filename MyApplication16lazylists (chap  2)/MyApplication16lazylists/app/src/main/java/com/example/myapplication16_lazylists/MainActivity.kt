@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,14 +19,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,12 +56,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
+    }rememberCoroutineScope()
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(itemArray: Array<out String>) {
     val context = LocalContext.current // in order to generate a toast in the good screen
+    val groupedItems = itemArray.groupBy { it.substringBefore(' ') }
+
+    val listState = rememberLazyListState()
+    val coroutintScope = rememberCoroutineScope()
 
     val onListItemClick = { text: String ->
         Toast.makeText(
@@ -63,12 +75,30 @@ fun MainScreen(itemArray: Array<out String>) {
             Toast.LENGTH_SHORT
         ).show()
     }
-    LazyColumn {
-        items(itemArray) { model ->
-            MyListItem(
-                item = model,
-                onItemClick = onListItemClick
-            )
+    Box {
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(bottom = 50.dp)
+        ) {
+            groupedItems.forEach { manufacturer, models ->
+                stickyHeader {
+                    Text(
+                        text = manufacturer,
+                        color = Color.White,
+                        modifier = Modifier
+                            .background(Color.Gray)
+                            .padding(5.dp)
+                            .fillMaxWidth()
+                    )
+                }
+                items(models) { model ->
+                    MyListItem(
+                        item = model,
+                        onItemClick = onListItemClick
+                    )
+                }
+            }
+
         }
     }
 }
@@ -114,8 +144,11 @@ fun MyListItem(item: String, onItemClick: (String) -> Unit) {
 fun GreetingPreview() {
     val itemArray: Array<String> = arrayOf( // mock array
         "Cadillac Eldorado",
+        "Cadillac ElFuego",
         "Ford Fairline",
-        "Plymouth Fury"
+        "Ford Mustang",
+        "Plymouth Fury",
+        "Plymouth Quiet"
     )
     MyApplication16LazyListsTheme {
         MainScreen(itemArray = itemArray)
