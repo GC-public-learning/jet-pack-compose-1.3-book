@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,9 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.myapplication16_lazylists.ui.theme.MyApplication16LazyListsTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var itemArray: Array<String>? = null
@@ -56,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }rememberCoroutineScope()
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -67,6 +73,7 @@ fun MainScreen(itemArray: Array<out String>) {
 
     val listState = rememberLazyListState()
     val coroutintScope = rememberCoroutineScope()
+    val displayButton = listState.firstVisibleItemIndex > 5
 
     val onListItemClick = { text: String ->
         Toast.makeText(
@@ -98,8 +105,24 @@ fun MainScreen(itemArray: Array<out String>) {
                     )
                 }
             }
-
         }
+        AnimatedVisibility(
+            visible = displayButton,
+            Modifier.align(Alignment.BottomCenter)
+        ) {
+            OutlinedButton(
+                onClick = {
+                    coroutintScope.launch { listState.scrollToItem(0) }
+                },
+                border = BorderStroke(1.dp, Color.Gray),
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.DarkGray),
+                modifier = Modifier.padding(5.dp)
+            ) {
+                Text(text = "Top")
+            }
+        }
+
     }
 }
 
