@@ -1400,3 +1400,150 @@ fun MainScreen(itemArray: Array<out String>) {
     }
 }
 ```
+## 6.15 v2 Lazy lists follow up(see book/MyApplication16lazylists (chap2))
+
+Use of :
+| function/ object	| explanations |
+|------------------ |--------------|
+| stickyHeader		| use of title for each leasy list section |
+| itemArray.groupBy	| group items by a choosen string |
+| LazyListState 	| kind of ScrollState (from normal lists), can be used to navigate on such place in the list |
+| CoroutineScope 	| Mandatory to handle the listState |
+| AnimatedVisibility | Wrap compose funs to make them visible or not |
+| OutlinedButton 	| Outlined Transparent body button used for low wheight actions |
+
+``` kotlin
+fun MainScreen(itemArray: Array<out String>) {
+    val context = LocalContext.current // in order to generate a toast in the good screen
+    val groupedItems = itemArray.groupBy { it.substringBefore(' ') }
+
+    val listState = rememberLazyListState()
+    val coroutintScope = rememberCoroutineScope()
+    val displayButton = listState.firstVisibleItemIndex > 5
+
+    val onListItemClick = { text: String ->
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    Box {
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(bottom = 50.dp) bottom : // padding at the end of the entire list
+        ) {
+            groupedItems.forEach { manufacturer, models ->
+                stickyHeader {
+                    Text(
+                        text = manufacturer,
+                        color = Color.White,
+                        modifier = Modifier
+                            .background(Color.Gray)
+                            .padding(5.dp)
+                            .fillMaxWidth()
+                    )
+                }
+                items(models) { model ->
+                    MyListItem(
+                        item = model,
+                        onItemClick = onListItemClick
+                    )
+                }
+            }
+        }
+        AnimatedVisibility(
+            visible = displayButton,
+            Modifier.align(Alignment.BottomCenter)
+        ) {
+            OutlinedButton(
+                onClick = {
+                    coroutintScope.launch { listState.scrollToItem(0) }
+                },
+                border = BorderStroke(1.dp, Color.Gray),
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.DarkGray),
+                modifier = Modifier.padding(5.dp)
+            ) {
+                Text(text = "Top")
+            }
+        }
+
+    }
+}
+```
+
+## 6.16 Staggered grid (see book/MyApplication17staggeredgrid)
+LazyVerticalStaggeredGrid & LazyHorizontalStaggeredGrid
+
+unlike LazyVerticalGrid and LazyHorizontalGrid whith which each cell has the same widh/height like its neighboors, the Staggered using allows the cells to have their own width/height depending on whether they belong the LazyVerticalStaggeredGrid or the LazyHorizontalStaggeredGrid
+
+The columns/rows parameter controls the grid’s appearance, which can be set to either adaptive or fixed mode. In adaptive mode, the grid will calculate the number of rows and columns that will fit into the available space, with even spacing between items and subject to a minimum specified cell size. Fixed mode, on the other hand, is passed the number of rows to be displayed and sizes each row or column equally to fill the available space. Configuration options are also available to reverse the layout, add content padding, disable scrolling, and define the spacing between cells.
+
+``` kotlin
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MainScreen() {
+    val items = (1 .. 50).map {
+        BoxProperties(
+            side = Random.nextInt(50, 200).dp,
+            color = Color(
+                Random.nextInt(255),
+                Random.nextInt(255),
+                Random.nextInt(255),
+                255
+            )
+        )
+    }
+    Column {
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Fixed(3),
+            modifier = Modifier.weight(0.5f),
+            contentPadding = PaddingValues(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalItemSpacing = 8.dp
+        ) {
+            items(items) { values ->
+                GridItem(properties = values, false) // false for vertical
+            }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        LazyHorizontalStaggeredGrid(
+            rows = StaggeredGridCells.Adaptive(minSize = 50.dp),
+            // mandatory to evenly spread the available space between the sides of the items
+            // with at least such minSize value
+            modifier = Modifier.weight(0.5f),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalItemSpacing = 8.dp
+        ) {
+            items(items) { values ->
+                GridItem(properties = values, true) // true for horizontal
+            }
+        }
+    }
+}
+
+@Composable
+fun GridItem(properties: BoxProperties, kind: Boolean) { // true: horizontal, false: vertical
+    var modifier = if(kind) Modifier
+        .fillMaxHeight() // not mandatory
+        .width(properties.side)
+    else Modifier
+        .fillMaxWidth() // not mandatory
+        .height(properties.side)
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(properties.color)
+            .then(modifier)
+    )
+}
+
+// ---------------------------
+
+data class BoxProperties(
+    val color: Color,
+    val side: Dp
+}
+```

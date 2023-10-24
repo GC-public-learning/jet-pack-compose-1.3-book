@@ -85,7 +85,7 @@ fun MainScreen(itemArray: Array<out String>) {
     Box {
         LazyColumn(
             state = listState,
-            contentPadding = PaddingValues(bottom = 50.dp)
+            contentPadding = PaddingValues(bottom = 50.dp) // bottom : padding at the end of the entire list
         ) {
             groupedItems.forEach { manufacturer, models ->
                 stickyHeader {
