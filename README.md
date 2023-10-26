@@ -1554,10 +1554,8 @@ data class BoxProperties(
 ### Animation effects
 | Effect 				| Explanations |
 |-----------------------|--------------|
-| expandHorizontally() 	| Content is revealed using a horizontal clipping technique. Options are available to
-control how much of the content is initially revealed before the animation begins. |
-| expandVertically()	| Content is revealed using a vertical clipping technique. Options are available to control
-how much of the content is initially revealed before the animation begins. |
+| expandHorizontally() 	| Content is revealed using a horizontal clipping technique. Options are available to control how much of the content is initially revealed before the animation begins. |
+| expandVertically()	| Content is revealed using a vertical clipping technique. Options are available to control how much of the content is initially revealed before the animation begins. |
 | expandIn() | Content is revealed using both horizontal and vertical clipping techniques. Options are available to control how much of the content is initially revealed before the animation begins. |
 | fadeIn() | Fades the content into view from transparent to opaque. The initial transparency (alpha) may be declared using a floating-point value between 0 and 1.0. The default is 0. |
 | fadeOut() | Fades the content out of view from opaque to invisible. The target transparency before the content disappears may be declared using a floating-point value between 0 and 1.0. The default is 0. |
