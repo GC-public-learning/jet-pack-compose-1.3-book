@@ -1508,7 +1508,8 @@ fun MainScreen() {
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        LazyHorizontalStaggeredGrid(
+        LazyHorizontalStaggere
+        dGrid(
             rows = StaggeredGridCells.Adaptive(minSize = 50.dp),
             // mandatory to evenly spread the available space between the sides of the items
             // with at least such minSize value
@@ -1545,5 +1546,141 @@ fun GridItem(properties: BoxProperties, kind: Boolean) { // true: horizontal, fa
 data class BoxProperties(
     val color: Color,
     val side: Dp
+}
+```
+
+## 6.17 Visibility Animation (see book/MyApplication18visibilityanimation)
+
+### Animation effects
+| Effect 				| Explanations |
+|-----------------------|--------------|
+| expandHorizontally() 	| Content is revealed using a horizontal clipping technique. Options are available to
+control how much of the content is initially revealed before the animation begins. |
+| expandVertically()	| Content is revealed using a vertical clipping technique. Options are available to control
+how much of the content is initially revealed before the animation begins. |
+| expandIn() | Content is revealed using both horizontal and vertical clipping techniques. Options are available to control how much of the content is initially revealed before the animation begins. |
+| fadeIn() | Fades the content into view from transparent to opaque. The initial transparency (alpha) may be declared using a floating-point value between 0 and 1.0. The default is 0. |
+| fadeOut() | Fades the content out of view from opaque to invisible. The target transparency before the content disappears may be declared using a floating-point value between 0 and 1.0. The default is 0. |
+| scaleIn() | The content expands into view as though a “zoom in” has been performed. By default, the content starts at zero size and expands to full size though this default can be changed by specifying the initial scale value as a float value between 0 and 1.0. |
+| scaleOut() | Shrinks the content from full size to a specified target scale before it disappears. The target scale is 0 by default but may be configured using a float value between 0 and 1.0. |
+| shrinkHorizontally() | Content slides from view behind a shrinking vertical clip bounds line. The targetwidth and direction may be configured. |
+| shrinkVertically() | Content slides from view behind a shrinking horizontal clip bounds line. The target width and direction may be configured. |
+| shrinkOut() | Content slides from view behind shrinking horizontal and vertical clip bounds lines. |
+| slideInHorizontally() | Content slides into view along the horizontal axis. The sliding direction and offset within the content where sliding begins are both customizable. |
+| slideInVertically() | Content slides into view along the vertical axis. The sliding direction and offset within the content where sliding begins are both customizable. |
+| slideIn() | Slides the content into view at a customizable angle defined using an initial offset value. |
+| slideOut() | Slides the content out of view at a customizable angle defined using a target offset value. |
+| slideOutHorizontally() | Content slides out of view along the horizontal axis. The sliding direction and offset within the content where sliding ends are both customizable. |
+| slideOutVertically() | Content slides out of view along the vertical axis. The sliding direction and offset within the content where sliding ends are both customizable. |
+
+it is also possible to combine animation effects
+``` kotlin
+AnimatedVisibility(
+	visible = boxVisible,
+	enter = fadeIn() + expandHorizontally(),
+	exit = slideOutVertically()
+) { composable() }
+```
+
+### animationSpec
+param of an animation in order to custom it
+
+#### Tweening
+part of the interpolation that calculates all the positions of a composable betwwen 2 ore more points : tween()
+
+#### Easing
+Part of tween() : reduce/increase the speed of a composable during the animation in function of its position
+
+ex:
+``` kotlin
+AnimatedVisibility(
+	visible = boxVisible,
+	enter = slideInHorizontally(
+		animationSpec =	tween(
+			durationMillis = 5000,
+			easing = LinearOutSlowInEasing
+		)
+	),
+	exit = slideOutVertically()
+) {composable() }
+```
+##### Kinds of easings
+- FastOutSlowInEasing
+- LinearOutSlowInEasing
+- FastOutLinearEasing
+- LinearEasing
+- CubicBezierEasing
+
+#### repeatable
+When the content of animationSpec is wrapped inside "repeatable" the animation can be repeated with some modes
+
+ex:
+``` kotlin
+AnimatedVisibility(
+	visible = boxVisible,
+	enter = fadeIn(
+		animationSpec = repeatable(
+			iterations = 10, 
+			animation = tween(durationMillis = 2000),
+			repeatMode = RepeatMode.Reverse
+		)
+	),
+	exit = slideOutVertically(),
+)
+```
+### Different animations for childrens
+Thank to the modifier, it is possible to setup some Animations for childrens, in this case they are combined with the parent animations.
+``` kotlin
+Box(
+	Modifier
+		.animateEnterExit(
+			enter = slideInVertically(
+				animationSpec = tween(durationMillis = 5500)),
+			exit = slideOutVertically(
+				animationSpec = tween(durationMillis = 5500))
+		)
+	.size(width = 150.dp, height = 150.dp)
+	.background(Color.Red)
+)
+```
+It is also possible to stop all the parent animations and just use the children ones
+``` kotlin
+AnimatedVisibility(
+	visible = boxVisible,
+	enter = EnterTransition.None,
+	exit = ExitTransition.None
+)
+```
+### MutableTransitionState
+In order to auto launch an animtion. If "visbleState" is used, "visible" cannot be used
+``` kotlin
+val state = remember { MutableTransitionState(false) }
+state.apply { targetState = true }
+
+AnimatedVisibility(
+	visibleState = state,
+	enter = fadeIn(
+		animationSpec = tween(5000)
+	),
+	exit = slideOutVertically(),
+)
+
+```
+
+### Crossfading
+Animate the replacememnt of one compasable by another one
+
+ex :
+``` kotlin
+Crossfade(
+	targetState = boxVisible,
+	animationSpec = tween(5000)
+) { visible ->
+	when (visible) {
+		true -> CustomButton(text = "Hide", targetState = false,
+				onClick = onClick, bgColor = Color.Red)
+		false -> CustomButton(text = "Show", targetState = true,
+				onClick = onClick, bgColor = Color.Magenta)
+	}
 }
 ```
