@@ -85,23 +85,18 @@ fun MainScreen() {
         Modifier.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Crossfade(
-                targetState = state.currentState,
-                animationSpec = tween(3000),
-                label = ""
-                ) { currenState ->
-                when(currenState) {
-                    true ->
+        Crossfade(
+            targetState = state.currentState,
+            animationSpec = tween(3000),
+            label = ""
+            ) { currenState ->
+            when(currenState) {
+                true ->
 //                        CustomButton(text = "Hide", targetState = false, onClick = onClick)
-                        CustomButton(text = "Hide", targetState = false, onClick = onClick2)
-                    false ->
+                    CustomButton(text = "Hide", targetState = false, onClick = onClick2)
+                false ->
 //                        CustomButton(text = "Show", targetState = true, onClick = onClick)
-                        CustomButton(text = "Show", targetState = true, onClick = onClick2)
-                }
+                    CustomButton(text = "Show", targetState = true, onClick = onClick2)
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
