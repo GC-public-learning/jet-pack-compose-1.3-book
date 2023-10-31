@@ -1611,8 +1611,6 @@ AnimatedVisibility(
 
 #### repeatable
 When the content of animationSpec is wrapped inside "repeatable" the animation can be repeated with some modes
-
-ex:
 ``` kotlin
 AnimatedVisibility(
 	visible = boxVisible,
@@ -1667,8 +1665,6 @@ AnimatedVisibility(
 
 ### Crossfading
 Animate the replacememnt of one compasable by another one
-
-ex :
 ``` kotlin
 Crossfade(
 	targetState = boxVisible,
@@ -1681,4 +1677,101 @@ Crossfade(
 				onClick = onClick, bgColor = Color.Magenta)
 	}
 }
+```
+## 6.18 Animate State (see book/MyApplication19animatestate)
+
+### animateColorAsState()
+the Color is replaced by another with an animation in function of the value of a var
+``` kotlin
+var temperature by remember { mutableStateOf(80) }
+
+val animatedColor: Color by animateColorAsState(
+	targetValue = if(temperature > 92) {
+		Color.Red
+	} else {
+		Color.Green
+	},
+	animationSpec = tween(4500)
+)
+```
+
+### animateFloatAsState()
+the angle of an Image is changed with animation in function of the value of a var
+``` kotlin
+var angleValue by remember { mutableStateOf(0f) }
+
+val angle by animateFloatAsState(
+    targetValue = angleValue,
+    animationSpec = tween(durationMillis = 2500), label = "rotation"
+)
+
+Image(
+    painter = painterResource(R.drawable.propeller),
+    contentDescription = "fan",
+    modifier = Modifier
+        .rotate(angle) // here is the way to use the angle
+        .padding(10.dp)
+        .size(150.dp)
+)
+```
+
+### animateDpAsState() ! to simplify !!........................................
+
+``` kotlin
+var boxState by remember { mutableStateOf(BoxPosition.Start) }
+val boxSideLength = 70.dp
+val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
+val animatedOffset: Dp by animateDpAsState(
+    targetValue = when(boxState) {
+        BoxPosition.Start -> 0.dp
+        BoxPosition.End -> screenWidth - boxSideLength
+    },
+    animationSpec = spring(
+        dampingRatio = DampingRatioHighBouncy, // const setup to 0.2f
+        stiffness = StiffnessVeryLow, // const setup to 50f
+        ),
+    label = "object moving"
+)
+
+Box(
+	modifier = Modifier
+	    .offset(x = animatedOffset, y = 20.dp)
+	    .size(boxSideLength)
+	    .background(Color.DarkGray)
+)
+```
+
+
+### Spring effects (from Spring object)
+
+#### Damping ratio consts
+- DampingRatioHighBouncy = 0.2f
+- DampingRatioLowBouncy = 0.75f
+- DampingRatioMediumBouncy = 0.5f
+- DampingRatioNoBouncy = 1f
+
+#### Stifness ratio consts
+- StiffnessHigh = 10_000f
+- StiffnessLow = 200f
+- StiffnessMedium = 1500f
+- StiffnessMediumLow = 400f
+- StiffnessVeryLow = 50f
+
+ex:
+``` kotlin
+animationSpec = spring(
+    dampingRatio = DampingRatioHighBouncy, // const setup to 0.2f
+    stiffness = StiffnessVeryLow, // const setup to 50f
+),
+```
+
+As all of these constants are Float so it is possible to directly setup custom float values
+
+ex:
+``` kotlin
+animationSpec = spring(
+    dampingRatio = 0.1f
+    stiffness = 100f
+),
 ```

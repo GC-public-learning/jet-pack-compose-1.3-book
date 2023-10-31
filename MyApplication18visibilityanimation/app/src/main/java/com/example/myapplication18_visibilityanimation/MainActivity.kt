@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen() {
-    var boxVisible by remember { mutableStateOf(true) }
+//    var boxVisible by remember { mutableStateOf(true) }
 //    val onClick = { newState: Boolean ->
 //        boxVisible = newState
 //    }
@@ -78,7 +78,7 @@ fun MainScreen() {
 //    state.apply { targetState = true }
     val onClick2 = { newState: Boolean ->
         val state2 = state.apply { targetState = newState }
-        // state2 is not used but if the line is not an assignation it is considered as return with lambda & it cannot
+        // state2 is not used but if the line is not an assignation it is considered as return with lambda & it cannot here
     }
 
     Column(
@@ -104,7 +104,7 @@ fun MainScreen() {
             visibleState = state,
 //            visible = boxVisible,
             enter = slideIn(
-                initialOffset = { IntOffset(it.width, it.height)},
+                initialOffset = { IntOffset(it.width, it.height) },
                 animationSpec = tween(
                     durationMillis = 3000,
                     easing = LinearOutSlowInEasing) // effect become gradually slow
