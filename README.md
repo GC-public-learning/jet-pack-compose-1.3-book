@@ -1693,6 +1693,13 @@ val animatedColor: Color by animateColorAsState(
 	},
 	animationSpec = tween(4500)
 )
+
+Box(
+	modifier = Modifier
+		.padding(20.dp)
+		.size(200.dp)
+		.background(Color.Red) // use of the color
+)
 ```
 
 ### animateFloatAsState()
@@ -1715,7 +1722,7 @@ Image(
 )
 ```
 
-### animateDpAsState() ! to simplify !!........................................
+### animateDpAsState()
 
 ``` kotlin
 var boxState by remember { mutableStateOf(BoxPosition.Start) }
@@ -1727,16 +1734,12 @@ val animatedOffset: Dp by animateDpAsState(
         BoxPosition.Start -> 0.dp
         BoxPosition.End -> screenWidth - boxSideLength
     },
-    animationSpec = spring(
-        dampingRatio = DampingRatioHighBouncy, // const setup to 0.2f
-        stiffness = StiffnessVeryLow, // const setup to 50f
-        ),
-    label = "object moving"
+    animationSpec = tween(500)
 )
 
 Box(
 	modifier = Modifier
-	    .offset(x = animatedOffset, y = 20.dp)
+	    .offset(x = animatedOffset, y = 20.dp) // the box moves only on the "X" axe
 	    .size(boxSideLength)
 	    .background(Color.DarkGray)
 )
@@ -1774,4 +1777,55 @@ animationSpec = spring(
     dampingRatio = 0.1f
     stiffness = 100f
 ),
+```
+
+### keyframes
+Allow different durations and easing values at specific points in an animation timeline
+``` kotlin
+animationSpec = keyframes {
+    durationMillis = 1000
+    100.dp.at(10).with(LinearEasing)
+    110.dp.at(500).with(FastOutSlowInEasing)
+    200.dp.at(700).with(LinearOutSlowInEasing)
+},
+```
+
+### animations combination
+use of updateTransition()
+``` kotlin
+var boxState by remember { mutableStateOf(BoxPosition.Start) }
+var screenWidth = LocalConfiguration.current.screenWidthDp.dp
+val transition = updateTransition(
+    targetState = boxState,
+    label = "Color and Motion"
+)
+val animatedColor: Color by transition.animateColor(
+    transitionSpec = {
+        tween(4000)
+    },
+    label = "colorAnimation"
+) { state ->
+    when(state) {
+        BoxPosition.Start -> Color.Red
+        BoxPosition.End -> Color.Magenta
+    }
+}
+val animatedOffset: Dp by transition.animateDp(
+    transitionSpec = {
+        tween(4000)
+    },
+    label = "offesetAnimation"
+) { state ->
+    when(state) {
+        BoxPosition.Start -> 0.dp
+        BoxPosition.End -> screenWidth - 70.dp
+    }
+}
+
+Box(
+	modifier = Modifier
+	    .offset(x = animatedOffset, y = 20.dp)
+	    .size(70.dp)
+	    .background(animatedColor)
+)
 ```
