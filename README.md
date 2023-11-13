@@ -1508,8 +1508,7 @@ fun MainScreen() {
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
-        LazyHorizontalStaggere
-        dGrid(
+        LazyHorizontalStaggeredGrid(
             rows = StaggeredGridCells.Adaptive(minSize = 50.dp),
             // mandatory to evenly spread the available space between the sides of the items
             // with at least such minSize value
