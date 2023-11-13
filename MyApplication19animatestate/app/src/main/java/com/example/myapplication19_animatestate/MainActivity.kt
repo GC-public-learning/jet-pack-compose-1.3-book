@@ -92,7 +92,8 @@ fun MainScreen() {
         TransitionDemo()
     }
 }
-
+// animateFloatAsState()
+// -------------------------
 @Composable
 fun RotationDemo() {
 //    var rotated by remember { mutableStateOf(false) }
@@ -101,7 +102,8 @@ fun RotationDemo() {
     val angle by animateFloatAsState(
 //        targetValue = if(rotated) 360f else 0f,
         targetValue = angleValue,
-        animationSpec = tween(durationMillis = 2500), label = "rotation"
+        animationSpec = tween(durationMillis = 2500),
+        label = "rotation"
     )
 
     Column(
@@ -125,7 +127,8 @@ fun RotationDemo() {
         }
     }
 }
-
+// animateColorAsState()
+// -------------------------
 @Composable
 fun ColorChangeDemo() {
     var colorState by remember { mutableStateOf(BoxColor.Red) }
@@ -135,7 +138,8 @@ fun ColorChangeDemo() {
             BoxColor.Red -> Color.Red
             BoxColor.Magenta -> Color.Magenta
         },
-        animationSpec = tween(4500), label = "color changing"
+        animationSpec = tween(4500),
+        label = "color changing"
     )
 
     Column(
@@ -162,6 +166,8 @@ fun ColorChangeDemo() {
     }
 }
 
+// animateDpAsState()
+// -------------------------
 @Composable
 fun MotionDemo() {
     var boxState by remember { mutableStateOf(BoxPosition.Start) }
@@ -209,7 +215,8 @@ fun MotionDemo() {
         }
     }
 }
-
+// updateTransition()
+// -------------------------
 @Composable
 fun TransitionDemo() {
     var boxState by remember { mutableStateOf(BoxPosition.Start) }
