@@ -31,6 +31,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -61,7 +62,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     Box() {
-        Box(Modifier.width(303.dp)) {
+        Box(Modifier.width(303.dp)) { // must be 1 dp more than the grid width at least
             LazyVerticalGrid(
                 // workaround Max width > wrap into Box into Box
                 columns = GridCells.Adaptive(150.dp),
@@ -69,7 +70,7 @@ fun MainScreen() {
                     .background(Color.Yellow),
                 contentPadding = PaddingValues(1.dp, 1.dp, 1.dp, 1.dp)
             ) {
-                items(5) { value ->
+                items(9) { value ->
                     Box(
                         Modifier
                             .background(Color.Yellow)
@@ -80,6 +81,10 @@ fun MainScreen() {
                             2 -> DrawCircle()
                             3 -> DrawOval()
                             4 -> GradientFill()
+                            5 -> RadiaFill()
+                            6 -> ShadowCircle()
+                            7 -> DrawArc()
+                            8 -> DrawPath()
                         }
                     }
 
@@ -179,7 +184,8 @@ fun DrawOval() {
 fun GradientFill() {
     Canvas(modifier = Modifier.size(150.dp)) {
         val canvasSize = size
-        val colorList: List<Color> = listOf(Color.Red, Color.Yellow, Color.Blue, Color.Magenta)
+        val colorList: List<Color> =
+            listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Magenta)
 
         val brush = Brush.horizontalGradient(
             colors = colorList,
@@ -190,6 +196,84 @@ fun GradientFill() {
         drawRect(
             brush = brush,
             size = canvasSize
+        )
+    }
+}
+
+@Composable
+fun RadiaFill() {
+    Canvas(Modifier.size(150.dp)) {
+        val radius = 75.dp.toPx()
+        val colorList: List<Color> =
+            listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Magenta)
+
+        val brush = Brush.radialGradient(
+            colors = colorList,
+            center = center,
+            radius = radius,
+            tileMode = TileMode.Repeated
+        )
+        drawCircle(
+            brush = brush,
+            center = center,
+            radius = radius
+        )
+    }
+}
+
+@Composable
+fun ShadowCircle() {
+    Canvas(Modifier.size(150.dp)) {
+        val radius = 75.dp.toPx()
+        val colorList: List<Color> = listOf(Color.Blue, Color.Black)
+        val brush = Brush.linearGradient(
+            colors = colorList,
+            start = Offset(0f, 0f),
+            end = Offset(150.dp.toPx(), 150.dp.toPx()),
+            tileMode = TileMode.Repeated
+        )
+        drawCircle(
+            brush = brush,
+            radius = radius
+        )
+    }
+}
+
+@Composable
+fun DrawArc() {
+    Canvas(Modifier.size(150.dp)) {
+        drawArc(
+            color = Color.Red,
+            startAngle = 315f,
+            sweepAngle = 90f,
+            useCenter = true,
+            size = Size(150.dp.toPx(), 150.dp.toPx())
+        )
+    }
+}
+
+@Composable
+fun DrawPath() {
+    Canvas(Modifier.size(150.dp)) {
+        val path = Path().apply {
+            moveTo(0f, 0f)
+            quadraticBezierTo(
+                25.dp.toPx(),
+                100.dp.toPx(),
+                150.dp.toPx(),
+                150.dp.toPx()
+            )
+            lineTo(135.dp.toPx(), 50.dp.toPx())
+            quadraticBezierTo(
+                30.dp.toPx(),
+                40.dp.toPx(),
+                0.dp.toPx(),
+                0.dp.toPx()
+            )
+        }
+        drawPath(
+            path = path,
+            color = Color.DarkGray
         )
     }
 }
