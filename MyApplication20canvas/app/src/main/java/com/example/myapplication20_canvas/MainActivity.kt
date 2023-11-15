@@ -57,6 +57,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import com.example.myapplication20_canvas.ui.theme.MyApplication20CanvasTheme
 import kotlin.math.PI
 import kotlin.math.sin
@@ -90,12 +91,12 @@ fun MainScreen() {
                     .background(Color.Yellow),
                 contentPadding = PaddingValues(1.dp, 1.dp, 1.dp, 1.dp)
             ) {
-                items(12) { value ->
+                items(12) { num ->
                     Box(
                         Modifier
                             .background(Color.Yellow)
                     ) {
-                        when (value) {
+                        when (num) {
                             0 -> DrawLine()
                             1 -> DrawRect()
                             2 -> DrawCircle()
@@ -373,6 +374,11 @@ fun DrawText() {
     Canvas(Modifier
         .size(150.dp)
         .background(Color.White)) {
+        // val dimensions = textMeasurer.measure(annotatedText)
+        drawRect(
+            brush = Brush.horizontalGradient(colors = colorList),
+            //size = dimensions.size.toSize()
+        )
         drawText(textMeasurer = textMeasurer, text = annotatedText,)
     }
 }
