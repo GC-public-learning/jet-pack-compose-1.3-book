@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,15 +32,34 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myapplication20_canvas.ui.theme.MyApplication20CanvasTheme
+import kotlin.math.PI
+import kotlin.math.sin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +90,7 @@ fun MainScreen() {
                     .background(Color.Yellow),
                 contentPadding = PaddingValues(1.dp, 1.dp, 1.dp, 1.dp)
             ) {
-                items(9) { value ->
+                items(12) { value ->
                     Box(
                         Modifier
                             .background(Color.Yellow)
@@ -85,6 +105,9 @@ fun MainScreen() {
                             6 -> ShadowCircle()
                             7 -> DrawArc()
                             8 -> DrawPath()
+                            9 -> DrawPoints()
+                            10 -> DrawImage()
+                            11 -> DrawText()
                         }
                     }
 
@@ -241,7 +264,10 @@ fun ShadowCircle() {
 
 @Composable
 fun DrawArc() {
-    Canvas(Modifier.size(150.dp)) {
+    Canvas(
+        Modifier
+            .size(150.dp)
+            .background(Color.Gray)) {
         drawArc(
             color = Color.Red,
             startAngle = 315f,
@@ -254,7 +280,10 @@ fun DrawArc() {
 
 @Composable
 fun DrawPath() {
-    Canvas(Modifier.size(150.dp)) {
+    Canvas(
+        Modifier
+            .size(150.dp)
+            .background(Color.White)) {
         val path = Path().apply {
             moveTo(0f, 0f)
             quadraticBezierTo(
@@ -275,6 +304,76 @@ fun DrawPath() {
             path = path,
             color = Color.DarkGray
         )
+    }
+}
+
+@Composable
+fun DrawPoints() {
+    Canvas(
+        Modifier
+            .size(150.dp)
+            .background(Color.Cyan)) {
+        val height = size.height
+        val width = size.width
+        val points = mutableListOf<Offset>()
+        (0..size.width.toInt()).forEach {x ->
+            val y = (sin(x * (2f * PI / width)) * (height / 2) + (height / 2)).toFloat()
+            points.add(Offset(x.toFloat(), y))
+        }
+        drawPoints(
+            points = points,
+            strokeWidth = 3f,
+            pointMode = PointMode.Points,
+            color = Color.Blue
+        )
+    }
+}
+@Composable
+fun DrawImage() {
+    val image = ImageBitmap.imageResource(id = R.drawable.vacation)
+
+    Canvas(Modifier.size(150.dp)){
+        val scaleRatio = 150.dp.toPx()/image.width // scale the width > longest side
+        scale(
+            scale = scaleRatio,
+            pivot = Offset(0f, 0f)
+        ) {
+            drawImage(
+                image = image,
+//                topLeft = Offset(0f, 0f), // useless > pivot already in scale
+            )
+        }
+    }
+    //    Image( // other way to draw an image and scale to fit either the witdh or height
+//        painter = painterResource(id = R.drawable.vacation),
+//        contentDescription = "landscape",
+//        contentScale = ContentScale.Fit
+//    )
+}
+
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun DrawText() {
+    val colorList: List<Color> =
+        listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Magenta)
+    val textMeasurer = rememberTextMeasurer()
+
+    val annotatedText = buildAnnotatedString {
+        withStyle(
+            style = SpanStyle(
+                fontSize = 35.sp,
+                fontWeight = FontWeight.Bold,
+                brush = Brush.verticalGradient(colors = colorList)
+            )
+        ) {
+            append("Hello anottated string")
+        }
+    }
+
+    Canvas(Modifier
+        .size(150.dp)
+        .background(Color.White)) {
+        drawText(textMeasurer = textMeasurer, text = annotatedText,)
     }
 }
 // -------------------------------------
