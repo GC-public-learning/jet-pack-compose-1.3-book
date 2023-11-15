@@ -1828,3 +1828,45 @@ Box(
 	    .background(animatedColor)
 )
 ```
+
+## 6.18 Canvas (see book/MyApplication20canvas)
+Surface to draw some things including drawing lines,shapes, gradients, images, text, and paths.
+
+ex with drawLine : 
+``` kotlin
+Canvas(
+    modifier = Modifier
+        .size(150.dp)
+        .background(Color.Gray)
+) {
+    val height = size.height
+    val width = size.width
+
+    drawLine(
+        start = Offset(x = 0f, y = 0f),
+        end = Offset(x = width, y = height),
+        color = Color.Blue,
+        strokeWidth = 16f,
+        pathEffect = PathEffect.dashPathEffect(
+            floatArrayOf(30f, 10f, 10f, 10f), phase = 0f
+        )
+    )
+}
+```
+
+### possible Draw funs 
+all funs from "interface DrawScope : Density"
+
+- drawLine()
+- drawRect()
+- drawRoundRect()
+- drawCircle()
+- drawOval()
+- drawArc()
+- drawPath()
+- drawPoints()
+- drawImage()
+
+funs from TextPainter
+- drawText()
+
