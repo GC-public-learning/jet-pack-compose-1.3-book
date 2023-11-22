@@ -1870,3 +1870,48 @@ all funs from "interface DrawScope : Density"
 funs from TextPainter
 - drawText()
 
+## ViewModel (see book/MyApplication21viewmodels)
+conventional way to split the data and the ui
+
+ViewModel declaration
+``` kotlin
+class DemoViewModel : ViewModel() {
+    var isFahrenheit by mutableStateOf(true)
+    var result by mutableStateOf("")
+
+    fun convertTemp(temp: String) {
+        ...
+    }
+    fun switchChange() {
+        ...
+    }
+    fun removeSpecialChars(text: String): String {
+        ...
+    }
+}
+```
+use of
+``` kotlin
+
+@Composable
+fun ScreenSetup(viewModel: DemoViewModel = viewModel()) {
+    MainScreen(
+        isFahrenheit = viewModel.isFahrenheit,
+        result = viewModel.result,
+        convertTemp = { viewModel.convertTemp(it) },
+        switchChange = { viewModel.switchChange() },
+        removeSpecialChars = { viewModel.removeSpecialChars(it) }
+    )
+}
+
+@Composable
+fun MainScreen(
+    isFahrenheit: Boolean,
+    result: String,
+    convertTemp: (String) -> Unit,
+    switchChange: () -> Unit,
+    removeSpecialChars: (String) -> String
+) {
+	...
+}
+```
