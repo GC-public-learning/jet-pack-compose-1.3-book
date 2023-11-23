@@ -1096,20 +1096,13 @@ Column(
 ## 6.13 Coroutines (assynchronous programming) (see book/MyApplication14coroutines)
 
 ### 6.13.1 built-in scopes
-specific group of routines in which each coroutine can be setup
+specific groups of routines in which each coroutine can be setup
 
-- GlobalScope : GlobalScope is used to launch top-level coroutines which are tied to the entire lifecycle of the
-application. Since this has the potential for coroutines in this scope to continue running when not needed
-(for example when an Activity exits) use of this scope is not recommended for use in Android applications.
-Coroutines running in GlobalScope are considered to be using unstructured concurrency.
+- GlobalScope : GlobalScope is used to launch top-level coroutines which are tied to the entire lifecycle of the application. Since this has the potential for coroutines in this scope to continue running when not needed (for example when an Activity exits) use of this scope is not recommended for use in Android applications. Coroutines running in GlobalScope are considered to be using unstructured concurrency.
 
-- ViewModelScope : Provided specifically for use in ViewModel instances when using the Jetpack architecture
-ViewModel component. Coroutines launched in this scope from within a ViewModel instance are automatically
-canceled by the Kotlin runtime system when the corresponding ViewModel instance is destroyed.
+- ViewModelScope : Provided specifically for use in ViewModel instances when using the Jetpack architecture ViewModel component. Coroutines launched in this scope from within a ViewModel instance are automatically canceled by the Kotlin runtime system when the corresponding ViewModel instance is destroyed.
 
-- LifecycleScope : Every lifecycle owner has associated with it a LifecycleScope. This scope is canceled when
-the corresponding lifecycle owner is destroyed making it particularly useful for launching coroutines from
-within composables and activities.
+- LifecycleScope : Every lifecycle owner has associated with it a LifecycleScope. This scope is canceled when the corresponding lifecycle owner is destroyed making it particularly useful for launching coroutines from within composables and activities.
 
 ``` kotlin
 val coroutineScope = rememberCoroutineScope() // declare the coroutine scope
@@ -1939,13 +1932,13 @@ once in the db via sqlite 3 > .help for all commands
 through the "Repository" that interacts with :
 - Room Database
 	- SQLite
-- DAO
+- DAO (Data Access Objects)
 - Entities
 
 ### Entities
 models of the tables builded via classes
 
-implementation:
+implementation ex:
 ``` kotlin
 @Entity(tableName = "customers")
 class Customer {
@@ -1978,7 +1971,7 @@ class Customer {
 }
 ```
 
-foreignKeys implementation:
+foreignKeys implementation ex:
 ``` kotlin
 @Entity(foreignKeys = arrayOf(ForeignKey(entity = Customer::class,
 	parentColumns = arrayOf("customerId"),
@@ -1997,4 +1990,101 @@ class Purchase {
 
 	...
 }
+```
+
+### DAO (Data Access Objects)
+Call to the Db management
+
+ex: 
+``` kotlin
+@Dao
+interface CustomerDao {
+	@Query("SELECT * FROM customers")
+	fun getAllCustomers(): LiveData<List<Customer>>
+
+	@Query("SELECT * FROM customers WHERE name = :customerName")
+	fun findCustomer(customerName: String): List<Customer>
+
+	@Insert
+	fun addCustomer(Customer customer)
+
+	@Insert
+	fun insertCustomers(Customer... customers)
+
+	@Query("DELETE FROM customers WHERE name = :name")
+	fun deleteCustomer(String name)
+
+	@Delete
+	fun deleteCustomers(Customer... customers)
+	@Delete
+	fun deleteCustomers(Customer... customers): int // return number of deleted rows
+
+	@Update
+	fun updateCustomers(Customer... customers)
+}
+```
+
+### Room database
+
+Singleton Db instanciation class ex:
+``` kotlin
+@Database(entities = [(Customer::class)], version = 1)
+abstract class CustomerRoomDatabase: RoomDatabase() {
+	abstract fun customerDao(): CustomerDao
+	
+	companion object {
+		private var INSTANCE: CustomerRoomDatabase? = null
+		fun getInstance(context: Context): CustomerRoomDatabase {
+			synchronized(this) {
+				var instance = INSTANCE
+				if (instance == null) {
+					instance = Room.databaseBuilder(
+						context.applicationContext,
+						CustomerRoomDatabase::class.java,
+						"customer_database"
+					).fallbackToDestructiveMigration().build()
+
+					INSTANCE = instance
+				}
+				return instance
+			}
+		}
+	}
+}	
+```
+
+### Repository
+
+ex:
+``` kotlin
+
+class CustomerRepository(private val customerDao: CustomerDao) {
+	private val coroutineScope = CoroutineScope(Dispatchers.Main)
+	...
+
+	fun insertCustomer(customer: Customer) {
+		coroutineScope.launch(Dispatchers.IO) {
+			customerDao.insertCustomer(customer)
+		}
+	}
+	fun deleteCustomer(name: String) {
+		coroutineScope.launch(Dispatchers.IO) {
+			customerDao.deleteCustomer(name)
+		}
+	}
+	fun getAllCustomers() : LiveData<List<Customer>>? {
+		val allCustomers: LiveData<List<Customer>>?
+		coroutineScope.launch(Dispatchers.IO) {
+			allCustomers = customerDao.getAllCustomers()
+		}
+		return allCustomers
+	}
+
+```
+calls
+``` koltin
+private val repository: CustomerRepository
+val customerDb = CustomerRoomDatabase.getInstance(application)
+val customerDao = customerDb.customerDao()
+repository = CustomerRepository(customerDao)
 ```
