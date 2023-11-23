@@ -1915,3 +1915,86 @@ fun MainScreen(
 	...
 }
 ```
+
+## Sqlite 3
+
+
+### how to create de db
+avd with root mandatory (the ones withouts Play store)
+
+in a terminal :
+be sure a root compatible avd is running and tape :
+``` bash
+adb -e shell
+su
+cd /data/data
+mkdir com.example.dbexample
+cd com.example.dbexample
+mkdir database
+sqlite3 ./mydatabase.db
+```
+once in the db via sqlite 3 > .help for all commands
+
+### Use of Sqlite 3 in project
+through the "Repository" that interacts with :
+- Room Database
+	- SQLite
+- DAO
+- Entities
+
+### Entities
+models of the tables builded via classes
+
+implementation:
+``` kotlin
+@Entity(tableName = "customers")
+class Customer {
+
+	@PrimaryKey(autoGenerate = true)
+	@NonNull
+	@ColumnInfo(name = "customerId")
+	var id: Int = 0
+
+	@ColumnInfo(name = "customerName")
+	var name: String? = null
+
+	var address: String? = null // no annotation but still belon the db (just not ref in SQL statements )
+
+	@Ignore
+	var randomInfo: String? = null // @ignore > the info doesn't belong the db
+
+
+	constructor() {}
+
+	constructor(id: Int, name: String, address: String) {
+	this.id = id
+	this.name = name
+	this.address = address
+	}
+	constructor(name: String, address: String) {
+	this.name = name
+	this.address = address
+	}
+}
+```
+
+foreignKeys implementation:
+``` kotlin
+@Entity(foreignKeys = arrayOf(ForeignKey(entity = Customer::class,
+	parentColumns = arrayOf("customerId"),
+	childColumns = arrayOf("buyerId"),
+	onDelete = ForeignKey.CASCADE,
+	onUpdate = ForeignKey.RESTRICT)))
+
+class Purchase {
+	@PrimaryKey(autoGenerate = true)
+	@NonNull
+	@ColumnInfo(name = "purchaseId")
+	var purchaseId: Int = 0
+
+	@ColumnInfo(name = "buyerId")
+	var buyerId: Int = 0
+
+	...
+}
+```
