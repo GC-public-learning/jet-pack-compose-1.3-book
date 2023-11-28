@@ -1930,8 +1930,8 @@ once in the db via sqlite 3 > .help for all commands
 
 ### Use of Sqlite 3 in project
 through the "Repository" that interacts with :
-- Room Database
-	- SQLite
+- Room Database library
+- SQLite
 - DAO (Data Access Objects)
 - Entities
 
@@ -2087,4 +2087,70 @@ private val repository: CustomerRepository
 val customerDb = CustomerRoomDatabase.getInstance(application)
 val customerDao = customerDb.customerDao()
 repository = CustomerRepository(customerDao)
+```
+
+## In-memory database vs Storage-based database
+in memory > short live database that dies when the app terminates
+
+ex:
+``` kotlin
+// Create a file storage-based database
+instance = Room.databaseBuilder(
+	context.applicationContext,
+	CustomerRoomDatabase::class.java,
+	"customer_database"
+	).fallbackToDestructiveMigration().build()
+
+// Create an in-memory database
+instance = Room.inMemoryDatabaseBuilder(
+	context.applicationContext,
+	CustomerRoomDatabase::class.java,
+	).fallbackToDestructiveMigration().build()
+
+```
+
+## Setup of dependencies
+
+- Room
+- Kapt
+- Maven coroutines
+- viewmodel
+
+in build.gradle
+``` groovy
+plugins {
+	...
+	id 'kotlin-kapt'
+}
+
+defaultConfig {
+    ...
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
+}
+
+dependencies {
+	...
+    implementation ("androidx.room:room-runtime:2.6.0")
+    implementation ("androidx.room:room-ktx:2.6.0")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    annotationProcessor ("androidx.room:room-compiler:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
+}
+// to make "kapt" features compatible change java version >
+android {
+	...
+    sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
 ```
