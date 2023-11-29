@@ -38,6 +38,4 @@ class ProductRepository(private val productDao: ProductDao) {
         coroutineScope.async(Dispatchers.IO) {
             return@async productDao.findProduct(name)
         }
-
-
 }

@@ -2001,6 +2001,8 @@ ex:
 interface CustomerDao {
 	@Query("SELECT * FROM customers")
 	fun getAllCustomers(): LiveData<List<Customer>>
+	// by choosing a LiveData type for the result of the query, the data is obervable 
+	// thank to that , when changes are done on the db the result is updated and also the ui that uses the data.
 
 	@Query("SELECT * FROM customers WHERE name = :customerName")
 	fun findCustomer(customerName: String): List<Customer>
@@ -2024,6 +2026,42 @@ interface CustomerDao {
 }
 ```
 
+### Repository
+
+ex:
+``` kotlin
+
+class CustomerRepository(private val customerDao: CustomerDao) {
+
+	val allCustomers: LiveData<List<Customer>> = customerDao.getAllCustomers()
+	// the LiveData object is already handled by Room as asynchronous and is auto run in another thread. 
+
+	private val coroutineScope = CoroutineScope(Dispatchers.Main)
+	...
+
+	// use of coroutine.launch > no return needed
+	fun insertCustomer(customer: Customer) {
+		coroutineScope.launch(Dispatchers.IO) {
+			customerDao.insertCustomer(customer)
+		}
+	}
+	fun deleteCustomer(name: String) {
+		coroutineScope.launch(Dispatchers.IO) {
+			customerDao.deleteCustomer(name)
+		}
+	}
+	fun findCustomer(name: String) {
+        coroutineScope.launch(Dispatchers.Main) {
+            searchResults.value = asyncFind(name).await()
+        }
+    }
+    // use of coroutine.async > return needed
+    private fun asyncFind(name: String): Deferred<List<Customer>?> =
+        coroutineScope.async(Dispatchers.IO) {
+            return@async customerDao.findCustomer(name)
+        }
+}
+```
 ### Room database
 
 Singleton Db instanciation class ex:
@@ -2053,35 +2091,19 @@ abstract class CustomerRoomDatabase: RoomDatabase() {
 }	
 ```
 
-### Repository
-
-ex:
+ViewModel factory 
+?????????? PURPOSE ??????????
 ``` kotlin
-
-class CustomerRepository(private val customerDao: CustomerDao) {
-	private val coroutineScope = CoroutineScope(Dispatchers.Main)
-	...
-
-	fun insertCustomer(customer: Customer) {
-		coroutineScope.launch(Dispatchers.IO) {
-			customerDao.insertCustomer(customer)
-		}
-	}
-	fun deleteCustomer(name: String) {
-		coroutineScope.launch(Dispatchers.IO) {
-			customerDao.deleteCustomer(name)
-		}
-	}
-	fun getAllCustomers() : LiveData<List<Customer>>? {
-		val allCustomers: LiveData<List<Customer>>?
-		coroutineScope.launch(Dispatchers.IO) {
-			allCustomers = customerDao.getAllCustomers()
-		}
-		return allCustomers
-	}
-
+class MainViewModelFactory(val application: Application) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return MainvViewModel(application) as T
+    }
+}
 ```
-calls
+
+
+### calls
 ``` koltin
 private val repository: CustomerRepository
 val customerDb = CustomerRoomDatabase.getInstance(application)
