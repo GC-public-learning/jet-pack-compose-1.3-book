@@ -2027,6 +2027,7 @@ interface CustomerDao {
 ```
 
 ### Repository
+calls of DAO interface methods and coroutines implementations for non LiveData returns
 
 ex:
 ``` kotlin
@@ -2063,8 +2064,9 @@ class CustomerRepository(private val customerDao: CustomerDao) {
 }
 ```
 ### Room database
+Singleton Db instanciation class 
 
-Singleton Db instanciation class ex:
+ex:
 ``` kotlin
 @Database(entities = [(Customer::class)], version = 1)
 abstract class CustomerRoomDatabase: RoomDatabase() {
@@ -2091,24 +2093,76 @@ abstract class CustomerRoomDatabase: RoomDatabase() {
 }	
 ```
 
-ViewModel factory 
-?????????? PURPOSE ??????????
+### ViewModel factory
+When Viewmodel needs to be customized
+
 ``` kotlin
-class MainViewModelFactory(val application: Application) :
-    ViewModelProvider.Factory {
+class MainViewModelFactory(val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MainvViewModel(application) as T
     }
 }
 ```
 
+### ViewModel
+``` kotlin
+class MainvViewModel(application: Application) : ViewModel() {
+    val allCustomers: LiveData<List<Customer>>
+    private val repository: CustomerRepository
+    val searchResults: MutableLiveData<List<Customer>>
 
-### calls
-``` koltin
-private val repository: CustomerRepository
-val customerDb = CustomerRoomDatabase.getInstance(application)
-val customerDao = customerDb.customerDao()
-repository = CustomerRepository(customerDao)
+    init {
+        val customerDb = CustomerRoomDatabase.getInstance(application)
+        val customerDao = customerDb.customerDao()
+        repository = CustomerRepository(customerDao)
+        allCustomers = repository.allCustomers
+        searchResults = repository.searchResults
+    }
+
+    fun insertCustomer(customer: Customer) {
+        repository.insertCustomer(customer)
+    }
+    fun findCustomer(name: String) {
+        repository.findCustomer(name)
+    }
+    fun deleteCustomer(name: String) {
+    repository.deleteCustomer(name)}
+}
+```
+
+### UI
+ViewModel instantiation via ViewModelFactory
+the owner handle the lifecycle of the viewModel it belong the Compose UI structure
+
+``` kotlin
+...
+Surface(
+    modifier = Modifier.fillMaxSize(),
+    color = MaterialTheme.colorScheme.background
+) {
+    val owner = LocalViewModelStoreOwner.current
+
+    owner?.let {
+        val viewModel: MainvViewModel = viewModel(
+                it,
+                "MainViewModel",
+                MainViewModelFactory(
+                    LocalContext.current.applicationContext as Application
+                )
+            )
+        ScreenSetup(viewModel)
+    }
+}
+
+@Composable
+fun ScreenSetup(viewModel: MainvViewModel) {
+    val allProducts by viewModel.allProducts.observeAsState(listOf())
+    val searchResults by viewModel.searchResults.observeAsState(listOf())
+    MainScreen(
+        allProducts = allProducts,
+        searchResults = searchResults,
+        viewModel = viewModel)
+}
 ```
 
 ## In-memory database vs Storage-based database
