@@ -110,7 +110,7 @@ print("My Name is " + myName)
 
 ## 5.5 :: (reflection)
 1st : in "build.gradle" insert line :
-``` groovy
+``` kotlin
 implementation(kotlin("reflect"))
 ```
 ``` kotlin
@@ -1105,7 +1105,14 @@ specific groups of routines in which each coroutine can be setup
 - LifecycleScope : Every lifecycle owner has associated with it a LifecycleScope. This scope is canceled when the corresponding lifecycle owner is destroyed making it particularly useful for launching coroutines from within composables and activities.
 
 ``` kotlin
-val coroutineScope = rememberCoroutineScope() // declare the coroutine scope
+// declaration and affectation of the coroutine scope
+val coroutineScope = rememberCoroutineScope() 
+// by using the "remember" function the coroutineScope belongs the compose element and it
+// is cancelled once the element is not longer active
+
+// other affectation of the coroutine scope
+val coroutineScope = CoroutineScope(Dispatchers.Main)
+// doesn't belong the compose element, so it is not cancelled once the element is not active
 
 coroutineScope.cancel() // cancel all coroutines from the scope
 ```
@@ -1325,7 +1332,7 @@ fun RowList() {
 bonus : image loading library : https://coil-kt.github.io/coil/
 
 build.gradle setup (for the bonus)
-``` groovy
+``` kotlin
 compileSdk = 34
 implementation("io.coil-kt:coil:2.4.0")
 ```
@@ -1935,6 +1942,53 @@ through the "Repository" that interacts with :
 - DAO (Data Access Objects)
 - Entities
 
+### Setup of dependencies
+
+- Room
+- Kapt
+- Jetbrains coroutines
+- viewmodel
+
+in build.gradle
+``` kotlin
+plugins {
+	...
+	id 'kotlin-kapt'
+}
+
+defaultConfig {
+    ...
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
+}
+
+dependencies {
+	val room_version = "2.6.1"
+	...
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+}
+// to make "kapt" features compatible change java version to work with the same then "kapt"
+android {
+	...
+    sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+```
+
 ### Entities
 models of the tables builded via classes
 
@@ -1987,9 +2041,13 @@ class Purchase {
 
 	@ColumnInfo(name = "buyerId")
 	var buyerId: Int = 0
-
 	...
 }
+```
+other foreignKey annotation ex :
+``` kotlin
+@ForeignKey(entity = Company.class, parentColumns = "companyId", childColumns = "companyForeignKey")
+public int companyForeignKey;
 ```
 
 ### DAO (Data Access Objects)
@@ -2132,7 +2190,7 @@ class MainvViewModel(application: Application) : ViewModel() {
 
 ### UI
 ViewModel instantiation via ViewModelFactory
-the owner handle the lifecycle of the viewModel it belong the Compose UI structure
+the owner handle the lifecycle of the viewModel, it belongs the Compose UI structure
 
 ``` kotlin
 ...
@@ -2141,6 +2199,7 @@ Surface(
     color = MaterialTheme.colorScheme.background
 ) {
     val owner = LocalViewModelStoreOwner.current
+    // LocalViewModelStoreOwner.current will return null if it is called outside a compose element
 
     owner?.let {
         val viewModel: MainvViewModel = viewModel(
@@ -2185,48 +2244,3 @@ instance = Room.inMemoryDatabaseBuilder(
 
 ```
 
-## Setup of dependencies
-
-- Room
-- Kapt
-- Maven coroutines
-- viewmodel
-
-in build.gradle
-``` groovy
-plugins {
-	...
-	id 'kotlin-kapt'
-}
-
-defaultConfig {
-    ...
-    kapt {
-        arguments {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-    }
-}
-
-dependencies {
-	...
-    implementation ("androidx.room:room-runtime:2.6.0")
-    implementation ("androidx.room:room-ktx:2.6.0")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    annotationProcessor ("androidx.room:room-compiler:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")
-}
-// to make "kapt" features compatible change java version >
-android {
-	...
-    sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
-```

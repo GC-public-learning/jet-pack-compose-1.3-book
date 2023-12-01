@@ -16,6 +16,7 @@ interface ProductDao {
 
     @Query("DELETE FROM products WHERE productName = :name")
     fun deleteProduct(name: String)
+    // @delete exists but an entity has to be passed in param, not a string
 
     @Query("SELECT * FROM products")
     fun getAllProducts() : LiveData<List<Product>>
