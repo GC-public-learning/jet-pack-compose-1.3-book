@@ -8,6 +8,8 @@ import com.example.myapplication22_sqlite.entities.Product
 
 @Dao
 interface ProductDao {
+    // all dao methods are created by Room during the build
+    // // generated Java code here : /app/build/generated/source/kapt/...
     @Insert
     fun insertProduct(product: Product)
 
@@ -16,7 +18,7 @@ interface ProductDao {
 
     @Query("DELETE FROM products WHERE productName = :name")
     fun deleteProduct(name: String)
-    // @delete exists but an entity has to be passed in param, not a string
+    // @Delete exists but an entity has to be passed in param, not a string
 
     @Query("SELECT * FROM products")
     fun getAllProducts() : LiveData<List<Product>>

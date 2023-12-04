@@ -2114,7 +2114,8 @@ class CustomerRepository(private val customerDao: CustomerDao) {
             searchResults.value = asyncFind(name).await()
         }
     }
-    // use of coroutine.async > return needed
+    // use of coroutine.async > if return needed
+    // return a Deffered object that needs to be called with .await()
     private fun asyncFind(name: String): Deferred<List<Customer>?> =
         coroutineScope.async(Dispatchers.IO) {
             return@async customerDao.findCustomer(name)
@@ -2128,7 +2129,10 @@ ex:
 ``` kotlin
 @Database(entities = [(Customer::class)], version = 1)
 abstract class CustomerRoomDatabase: RoomDatabase() {
+
 	abstract fun customerDao(): CustomerDao
+	// Room will generate the method body during the build process
+	// generated Java code here : /app/build/generated/source/kapt/...
 	
 	companion object {
 		private var INSTANCE: CustomerRoomDatabase? = null
@@ -2171,7 +2175,11 @@ class MainvViewModel(application: Application) : ViewModel() {
 
     init {
         val customerDb = CustomerRoomDatabase.getInstance(application)
+        // can't be declared before > ProductRoomDatabase is abstract
+
         val customerDao = customerDb.customerDao()
+		// can't be declared before too > productDb.productDao() is abstract
+
         repository = CustomerRepository(customerDao)
         allCustomers = repository.allCustomers
         searchResults = repository.searchResults
@@ -2211,7 +2219,7 @@ Surface(
             )
         ScreenSetup(viewModel)
     }
-}
+}f
 
 @Composable
 fun ScreenSetup(viewModel: MainvViewModel) {

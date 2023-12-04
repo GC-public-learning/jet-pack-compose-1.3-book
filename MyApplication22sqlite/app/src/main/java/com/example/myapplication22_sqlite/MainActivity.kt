@@ -41,7 +41,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication22_sqlite.entities.Product
-import com.example.myapplication22_sqlite.ui.theme.MainvViewModel
+import com.example.myapplication22_sqlite.MainvViewModel
 import com.example.myapplication22_sqlite.ui.theme.MyApplication22SqliteTheme
 
 class MainActivity : ComponentActivity() {

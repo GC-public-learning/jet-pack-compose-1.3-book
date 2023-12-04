@@ -10,6 +10,8 @@ import com.example.myapplication22_sqlite.entities.Product
 @Database(entities = [(Product::class)], version = 1)
 abstract class ProductRoomDatabase: RoomDatabase() {
     abstract fun productDao(): ProductDao
+    // Room will generate the method body during the build process
+    // generated Java code here : /app/build/generated/source/kapt/...
     companion object {
         private var INSTANCE: ProductRoomDatabase? = null
 

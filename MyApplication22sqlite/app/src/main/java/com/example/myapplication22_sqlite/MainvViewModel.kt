@@ -1,4 +1,4 @@
-package com.example.myapplication22_sqlite.ui.theme
+package com.example.myapplication22_sqlite
 
 
 import android.app.Application
