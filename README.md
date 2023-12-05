@@ -272,6 +272,7 @@ displayStrings("one", "two", "three", "four")
 ```
 
 ### 5.12.1 lambda (see book/HS/lambda)
+Anonymous functions
 ``` kotlin
 val sayHello = { println("Hello") }
 sayHello()
@@ -1916,7 +1917,7 @@ fun MainScreen(
 }
 ```
 
-## Sqlite 3
+## Sqlite 3 (see book/MyApplication22sqlite)
 
 
 ### how to create de db
@@ -2183,7 +2184,7 @@ class MainvViewModel(application: Application) : ViewModel() {
         repository = CustomerRepository(customerDao)
         allCustomers = repository.allCustomers
         searchResults = repository.searchResults
-    }
+    }/home/hunteroxo/AndroidStudioProjects
 
     fun insertCustomer(customer: Customer) {
         repository.insertCustomer(customer)
@@ -2232,7 +2233,7 @@ fun ScreenSetup(viewModel: MainvViewModel) {
 }
 ```
 
-## In-memory database vs Storage-based database
+### In-memory database vs Storage-based database
 in memory > short live database that dies when the app terminates
 
 ex:
@@ -2251,4 +2252,16 @@ instance = Room.inMemoryDatabaseBuilder(
 	).fallbackToDestructiveMigration().build()
 
 ```
+
+## navigation (see book/MyApplication23nav)
+
+adding dependencies in build.gradle.kts
+``` kotlin
+
+dependencies {
+	...
+	implementation("androidx.navigation:navigation-compose:2.7.5")
+}
+```
+
 
