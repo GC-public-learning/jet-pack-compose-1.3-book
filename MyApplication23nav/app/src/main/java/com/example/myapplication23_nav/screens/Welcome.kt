@@ -13,20 +13,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.myapplication23_nav.NavRoutes
 
 @Composable
-fun Welcome(navController: NavHostController) {
+fun Welcome(navController: NavHostController, userName: String?) {
+    val un = userName
+    un ?: ""
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text ="Welcome",
+                text = "Welcome $userName",
                 style = MaterialTheme.typography.headlineSmall
             )
             Spacer(modifier = Modifier.size(30.dp))
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {
+                    navController.navigate(NavRoutes.profile.route) {
+                        popUpTo(NavRoutes.home.route) // the back stack will ignore all routes but the Home
+                    }
+                }
+            ) {
                 Text(text = "Set up your Profile")
             }
         }

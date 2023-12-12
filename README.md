@@ -2264,4 +2264,146 @@ dependencies {
 }
 ```
 
+The navigation works with 3 components :
 
+- The nav routes : path of the screens 
+- the nav controller : used to navigate
+- the nav host : link routes with composables (screens)
+
+
+### nav routes class ex :
+``` kotlin
+sealed class NavRoutes(val route : String) {
+    object home : NavRoutes("home") // affectation done with : instead =
+    object welcome : NavRoutes("welcome")
+    object profile : NavRoutes("profile")
+}
+```
+
+### NavHost call and use of navController ex :
+goal : link routes with composables (screens)
+
+``` kotlin
+fun MainScreen() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = NavRoutes.home.route
+    ) {
+        composable(NavRoutes.home.route) {
+            Home(navController = navController)
+        }
+        composable(NavRoutes.welcome.route) {
+            Welcome(navController = navController)
+        }
+        composable(NavRoutes.profile.route) {
+            Profile(navController = navController)
+        }
+    }
+}
+```
+
+### composable (screen) ex :
+``` kotlin
+fun Home(navController: NavHostController) {
+    var userName by remember { mutableStateOf("") }
+    val onUserNameChange = { text: String -> userName = text }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            CustomTextField(
+                title = "Enter your name",
+                textState = userName,
+                onTextChange = onUserNameChange)
+            Spacer(modifier = Modifier.size(30.dp))
+            Button(onClick = {
+                    navController.navigate(NavRoutes.welcome.route)
+                }
+            ) {
+                Text(text = "Register")
+            }
+        }
+    }
+```
+
+### Moving of var/val between screens
+
+string passed as param ex :
+``` kotlin
+fun Home(navController: NavHostController) {
+    var userName by remember { mutableStateOf("") }
+    val onUserNameChange = { text: String -> userName = text }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            CustomTextField(
+                title = "Enter your name",
+                textState = userName,
+                onTextChange = onUserNameChange)
+            Spacer(modifier = Modifier.size(30.dp))
+            Button(onClick = {
+                    navController.navigate(NavRoutes.welcome.route + "/$userName")
+                }
+            ) {
+                Text(text = "Register")
+            }
+        }
+    }
+```
+NavHost modification ex :
+``` kotlin
+fun MainScreen() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = NavRoutes.home.route
+    ) {
+        composable(NavRoutes.home.route) {
+            Home(navController = navController)
+        }
+        composable(NavRoutes.welcome.route + "/{userName}") {backStackEntry ->
+            val userName = backStackEntry.arguments?.getString("userName")
+            Welcome(navController = navController, userName) 
+            // the composable is instantiated with a new param
+        }
+        composable(NavRoutes.profile.route) {
+            Profile(navController = navController)
+        }
+    }
+}
+```
+
+### Setup the back stack to popup a screen (home) ex :
+``` kotlin
+@Composable
+fun Welcome(navController: NavHostController, userName: String?) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "Welcome $userName",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Spacer(modifier = Modifier.size(30.dp))
+            Button(onClick = {
+                    navController.navigate(NavRoutes.profile.route) {
+                        popUpTo(NavRoutes.home.route) // the back stack will ignore all routes but the Home
+                    }
+                }
+            ) {
+                Text(text = "Set up your Profile")
+            }
+        }
+    }
+}
+```

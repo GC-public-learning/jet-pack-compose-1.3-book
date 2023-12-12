@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.myapplication23_nav.NavRoutes
 
 
 @Composable
@@ -40,7 +41,7 @@ fun Home(navController: NavHostController) {
                 onTextChange = onUserNameChange)
             Spacer(modifier = Modifier.size(30.dp))
             Button(onClick = {
-                    /*TODO*/
+                    navController.navigate(NavRoutes.welcome.route + "/$userName")
                 }
             ) {
                 Text(text = "Register")

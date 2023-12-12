@@ -10,6 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication23_nav.screens.Home
+import com.example.myapplication23_nav.screens.Profile
+import com.example.myapplication23_nav.screens.Welcome
 import com.example.myapplication23_nav.ui.theme.MyApplication23NavTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    MainScreen()
                 }
             }
         }
@@ -30,17 +36,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun MainScreen() {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyApplication23NavTheme {
-        Greeting("Android")
+    NavHost(
+        navController = navController,
+        startDestination = NavRoutes.home.route
+    ) {
+        composable(NavRoutes.home.route) {
+            Home(navController = navController)
+        }
+        composable(NavRoutes.welcome.route + "/{userName}") {backStackEntry ->
+            val userName = backStackEntry.arguments?.getString("userName")
+            Welcome(navController = navController, userName)
+        }
+        composable(NavRoutes.profile.route) {
+            Profile(navController = navController)
+        }
     }
 }
+
