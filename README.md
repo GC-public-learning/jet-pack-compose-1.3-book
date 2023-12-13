@@ -2407,3 +2407,167 @@ fun Welcome(navController: NavHostController, userName: String?) {
     }
 }
 ```
+
+## Nav bar (see book/MyApplication24bottomnavbar)
+
+adding dependencies in build.gradle.kts
+``` kotlin
+
+dependencies {
+	...
+	implementation("androidx.navigation:navigation-compose:2.7.5")
+}
+```
+
+### Routes setup
+
+NavRoutes class
+``` kotlin
+sealed class NavRoutes(val route: String) {
+    object home : NavRoutes("home")
+    object contacts : NavRoutes("contacts")
+    object favorites : NavRoutes("favorites")
+}
+```
+
+### Item for nav skeleton
+
+BarItem data class 
+``` kotlin
+data class BarItem(
+    val title: String,
+    val image: ImageVector,
+    val route: String
+)
+```
+
+### Items for nav setup
+
+NavBarItems object that contains the list of the BarItems
+```kotlin
+object NavBarItems {
+    val BarItems = listOf(
+        BarItem(
+            title = "Home",
+            image = Icons.Filled.Home,
+            route = "home"
+        ),
+        BarItem(
+            title = "Contacts",
+            image = Icons.Filled.Face,
+            route = "contacts"
+        ),
+        BarItem(
+            title = "Favorites",
+            image = Icons.Filled.Favorite,
+            route = "favorites"
+        ),
+    )
+}
+```
+
+### Screens
+
+Screen Home ex : 
+``` kotlin
+@Composable
+fun Home() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Home,
+            contentDescription = "home",
+            tint = Color.Blue,
+            modifier = Modifier
+                .size(150.dp)
+                .align(Alignment.Center)
+        )
+    }
+}
+```
+
+### Bottom nav Bar composable setup (EXPLANATIONS TO FINISH !!!!)
+``` kotlin
+@Composable
+fun BottomNavigationBar(navController: NavHostController) {
+    NavigationBar {
+        val backStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = backStackEntry?.destination?.route
+
+        NavBarItems.BarItems.forEach { navItem ->
+            NavigationBarItem(
+                selected = currentRoute == navItem.route,
+                onClick = {
+                    navController.navigate(navItem.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = navItem.image,
+                        contentDescription = navItem.title
+                    )
+                },
+                label = { Text(text = navItem.title)}
+            )
+        }
+    }
+}
+```
+
+### navController creation
+``` kotlin
+fun MainScreen() {
+    val navController = rememberNavController()
+    ...
+}
+```
+
+### navHost setup
+goal : link routes with composables (screens)
+
+``` kotlin
+@Composable
+fun NavigationHost(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = NavRoutes.home.route
+    ) {
+        composable(NavRoutes.home.route) {
+            Home()
+        }
+        composable(NavRoutes.contacts.route) {
+            Contacts()
+        }
+        composable(NavRoutes.favorites.route) {
+            Favorites()
+        }
+    }
+}
+```
+
+### Display of the Bottom nav bar and the screens through NavHost
+
+Use of a Scaffold (padding mandatory !)
+```
+fun MainScreen() {
+    val navController = rememberNavController()
+    
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(text = "Bottom nav Demo") }) },
+        content = { padding -> 
+            Column(Modifier.padding(padding)) {
+                NavigationHost(navController = navController)
+            }
+        },
+        bottomBar = { BottomNavigationBar(navController = navController) }
+    )
+}
+```
+
+
