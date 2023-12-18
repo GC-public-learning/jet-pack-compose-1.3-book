@@ -55,7 +55,7 @@ fun MainScreen() {
     
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = "Bottom nav Demo") }) },
-        content = { padding ->
+        content = { padding -> // padding mandatory in scaffold
             Column(Modifier.padding(padding)) {
                 NavigationHost(navController = navController)
             }
@@ -85,8 +85,8 @@ fun NavigationHost(navController: NavHostController) {
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     NavigationBar {
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = backStackEntry?.destination?.route
+        val backStackEntry by navController.currentBackStackEntryAsState() // to create currentRoute
+        val currentRoute = backStackEntry?.destination?.route // to target the selected Items
 
         NavBarItems.BarItems.forEach { navItem ->
             NavigationBarItem(
@@ -94,9 +94,9 @@ fun BottomNavigationBar(navController: NavHostController) {
                 onClick = {
                     navController.navigate(navItem.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                            saveState = true // combined with "restoreState" to get back the state when destination reached again
                         }
-                        launchSingleTop = true
+                        launchSingleTop = true // reuse the screen on the back stack top (no new instance)
                         restoreState = true
                     }
                 },
