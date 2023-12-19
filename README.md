@@ -2554,7 +2554,7 @@ fun NavigationHost(navController: NavHostController) {
 ### Display of the Bottom nav bar and the screens through NavHost
 
 Use of a Scaffold (padding mandatory !)
-```
+``` kotlin
 fun MainScreen() {
     val navController = rememberNavController()
     
@@ -2571,3 +2571,146 @@ fun MainScreen() {
 ```
 
 
+## Gestures (see book/MyApplication25gestures)
+
+### Classic simple tap detection
+``` kotlin
+val clickHandler = { ... }
+
+Box(Modifier
+    .clickable { clickHandler() }
+    .size(100.dp)
+    .backGround(customColor) 
+)
+```
+
+### Detection of other tap gestures
+``` kotlin
+val tapHandler = { ... }
+
+Box(
+    Modifier
+        .size(100.dp)
+        .background(Color.Red)
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onPress = { tapHandler("onPress detected !") }, // triggered on each kind of tap 
+                onDoubleTap = { tapHandler("onDoubleTap detected !") },
+                onLongPress = { tapHandler("onLongPress detected !") },
+                onTap = { tapHandler("onTap detected !") }
+            )
+        }
+)
+```
+
+### Detection of the swipe 
+Can be detected vertically or horizontally
+``` kotlin
+var xOffset by remember { mutableStateOf(0f) }
+
+    Box(modifier = Modifier
+        .offset { IntOffset(xOffset.roundToInt(), 0) }
+        .size(100.dp)
+        .background(Color.Cyan)
+        .draggable(
+            orientation = Orientation.Horizontal, // only horizontal swipe detected
+            state = rememberDraggableState { distance ->
+                xOffset += distance
+            }
+        )
+    )
+```
+
+### Detection of Horizontally and vertically swipes in the same time
+``` kotlin
+var xOffset by remember { mutableStateOf(0f) }
+var yOffset by remember { mutableStateOf(0f) }
+
+Box(Modifier
+    .offset { IntOffset(xOffset.roundToInt(), yOffset.roundToInt()) }
+    .background(Color.Magenta)
+    .size(100.dp)
+    .pointerInput(Unit) { // detect both Horizontal & Vertical swipes
+        detectDragGestures { _, distance ->
+            xOffset += distance.x
+            yOffset += distance.y
+        }
+    }
+)
+```
+
+### Scrolling dection with ".scrollable"
+Can be detected horizontally or vertically
+``` kotlin
+var offset by remember { mutableStateOf(0f) }
+
+Box(
+    Modifier
+        .scrollable(
+            orientation = Orientation.Vertical,
+            state = rememberScrollableState { distance ->
+                offset += distance
+                distance
+            }
+        )
+) {
+    Box(Modifier
+        .size(90.dp)
+        .offset { IntOffset(0, offset.roundToInt()) }
+        .background(Color.DarkGray)
+    )
+}
+```
+
+### ScrollModifiers
+Detection of the vertical and horizontal scroll in the same time
+
+goal of the ex : move the big image inside the little box in order to see its content
+``` kotlin
+val image = ImageBitmap.imageResource(id = R.drawable.vacation)
+
+Box(
+    Modifier
+        .size(150.dp)
+        .verticalScroll(rememberScrollState()) // belong the library "Scroll.kt"
+        .horizontalScroll(rememberScrollState())
+) {
+    Canvas(modifier = Modifier.size(360.dp, 270.dp)) {
+        drawImage(
+            image = image,
+            topLeft = Offset(0f, 0f)
+        )
+    }
+}
+```
+
+### Multitouchs detection
+Detection of Pinch (scaleChange), rotation (rotationChange) and swiping with 2 fingers (offsetChange)
+``` kotlin
+// with emulator SHIFT, CTRL, hold left click to pinch or rotate
+var scale by remember { mutableStateOf(1f) }
+var angle by remember { mutableStateOf(0f) }
+var offset by remember { mutableStateOf(Offset.Zero) }
+
+val state = rememberTransformableState { scaleChange, offsetChange, rotationChange ->
+    scale *= scaleChange
+    angle += rotationChange
+    offset += offsetChange
+}
+
+Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier
+            .graphicsLayer( // use of changes
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = angle,
+                translationX = offset.x,
+                translationY = offset.y
+            )
+            .transformable(state = state) // trigger changes
+            .background(Color.Yellow)
+            .size(100.dp)
+    )
+}
+```

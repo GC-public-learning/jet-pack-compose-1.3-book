@@ -12,7 +12,9 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,9 +42,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.myapplication25_gestures.ui.theme.MyApplication25GesturesTheme
@@ -75,14 +77,16 @@ fun MainScreen() {
             Spacer(Modifier.width(10.dp))
             DragDemo()
         }
+        Spacer(Modifier.height(10.dp))
         Row {
-            Spacer(Modifier.width(10.dp))
             PointerInputDrag()
             Spacer(Modifier.width(10.dp))
             ScrollableModifier()
             Spacer(Modifier.width(10.dp))
             ScrollModifiers()
         }
+        Spacer(Modifier.height(10.dp))
+        MultiTouchDemo()
     }
 }
 
@@ -99,7 +103,7 @@ fun ClickDemo() {
 
     Box(
         Modifier
-            .clickable { clickHandler() }
+            .clickable { clickHandler() } // detect only simple tap
             .background(bgColor)
             .size(100.dp)
     )
@@ -117,13 +121,12 @@ fun TapPressDemo() {
     ) {
         Box(
             Modifier
-                // .clickable { clickHandler() } detect only simple tap
                 .padding(10.dp)
                 .background(Color.Red)
                 .size(100.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(
-                        onPress = { tapHandler("onPress detected !") },
+                        onPress = { tapHandler("onPress detected !") }, // triggered on each kind of tap
                         onDoubleTap = { tapHandler("onDoubleTap detected !") },
                         onLongPress = { tapHandler("onLongPress detected !") },
                         onTap = { tapHandler("onTap detected !") }
@@ -156,7 +159,7 @@ fun DragDemo() {
 
 @Composable
 fun PointerInputDrag() {
-    Box() {
+    Box {
         var xOffset by remember { mutableStateOf(0f) }
         var yOffset by remember { mutableStateOf(0f) }
 
@@ -212,5 +215,36 @@ fun ScrollModifiers() {
                 topLeft = Offset(0f, 0f)
             )
         }
+    }
+}
+
+@Composable
+fun MultiTouchDemo() {
+    // with emulator SHIFT, CTRL, hold left click to pinch or rotate
+    var scale by remember { mutableStateOf(1f) }
+    var angle by remember { mutableStateOf(0f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+
+    val state = rememberTransformableState { scaleChange, offsetChange, rotationChange ->
+        scale *= scaleChange
+        angle += rotationChange
+        offset += offsetChange
+    }
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .graphicsLayer( // use of changes
+                    scaleX = scale,
+                    scaleY = scale,
+                    rotationZ = angle,
+                    translationX = offset.x,
+                    translationY = offset.y
+                )
+                .transformable(state = state) // trigger changes
+                .background(Color.Yellow)
+                .size(100.dp)
+        )
+
     }
 }
