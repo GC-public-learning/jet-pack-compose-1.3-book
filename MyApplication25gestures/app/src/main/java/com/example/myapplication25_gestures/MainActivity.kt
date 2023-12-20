@@ -245,6 +245,5 @@ fun MultiTouchDemo() {
                 .background(Color.Yellow)
                 .size(100.dp)
         )
-
     }
 }

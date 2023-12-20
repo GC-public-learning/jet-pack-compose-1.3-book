@@ -2714,3 +2714,25 @@ Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     )
 }
 ```
+
+## Flows (see boo/MyApplication26flow)
+
+implementation in build.gradle
+``` kotlin
+dependencies {
+	...
+	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+}
+```
+### 3 ways to init the flows
+``` kotlin
+val myFlow: Flow<Int> = flow { // manualy emits
+	for (i in 0..9) {
+		emit(i)
+		delay(2000)
+}
+
+var a = flowOf(1, 2, 3) // auto emits
+arrayOf<String>("Red", "Green", "Blue").asFlow() // auto emits
+```
