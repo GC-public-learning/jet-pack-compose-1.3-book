@@ -1871,7 +1871,7 @@ all funs from "interface DrawScope : Density"
 funs from TextPainter
 - drawText()
 
-## ViewModel (see book/MyApplication21viewmodels)
+## 6.19 ViewModel (see book/MyApplication21viewmodels)
 conventional way to split the data and the ui
 
 ViewModel declaration
@@ -1917,7 +1917,7 @@ fun MainScreen(
 }
 ```
 
-## Sqlite 3 (see book/MyApplication22sqlite)
+## 6.20 Sqlite 3 (see book/MyApplication22sqlite)
 
 
 ### how to create de db
@@ -2253,7 +2253,7 @@ instance = Room.inMemoryDatabaseBuilder(
 
 ```
 
-## navigation (see book/MyApplication23nav)
+## 6.21 Navigation (see book/MyApplication23nav)
 
 adding dependencies in build.gradle.kts
 ``` kotlin
@@ -2408,7 +2408,7 @@ fun Welcome(navController: NavHostController, userName: String?) {
 }
 ```
 
-## Nav bar (see book/MyApplication24bottomnavbar)
+## 6.22 Nav bar (see book/MyApplication24bottomnavbar)
 
 adding dependencies in build.gradle.kts
 ``` kotlin
@@ -2571,7 +2571,7 @@ fun MainScreen() {
 ```
 
 
-## Gestures (see book/MyApplication25gestures)
+## 6.23 Gestures (see book/MyApplication25gestures)
 
 ### Classic simple tap detection
 ``` kotlin
@@ -2715,9 +2715,9 @@ Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 }
 ```
 
-## Flows (see boo/MyApplication26flow)
+## 6.24 Flows (see book/MyApplication26flow)
 
-implementation in build.gradle
+### implementation in build.gradle
 ``` kotlin
 dependencies {
 	...
@@ -2725,14 +2725,95 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 }
 ```
-### 3 ways to init the flows
-``` kotlin
-val myFlow: Flow<Int> = flow { // manualy emits
-	for (i in 0..9) {
-		emit(i)
-		delay(2000)
-}
 
-var a = flowOf(1, 2, 3) // auto emits
-arrayOf<String>("Red", "Green", "Blue").asFlow() // auto emits
+### functioning of the flow with 3 steps
+- Producer 
+- Intermediary 
+- consumer
+
+
+
+### Producer
+
+3 ways to init the flows
+``` kotlin
+class DemoViewModel : ViewModel() {
+	// Producer block
+	val myFlow: Flow<Int> = flow { // manually emits
+		for (i in 0..9) {
+			emit(i)
+			delay(2000)
+	}
+
+	var a = flowOf(1, 2, 3) // auto emits
+	arrayOf<String>("Red", "Green", "Blue").asFlow() // auto emits
+
+	...
+}
 ```
+### Intermediary
+``` kotlin
+class DemoViewModel : ViewModel() {
+	...
+	 val newFlow = myFlow.map {
+        "Current value = $it"
+    }
+
+	val newFlow2 = myFlow
+        .filter { it % 2 == 0 } // keep only even values
+        .map {
+            "Current value = $it"
+        }
+
+	val newFlow3 = myFlow
+        .transform {
+            emit("Value = $it")
+            delay(500) // additional delay (doesn't remove or modify the 1st delay)
+            val doubled = it * 2
+            emit("doubled value = $doubled")
+        }
+}
+```
+
+### Consumer
+
+``` kotlin
+fun MainScreen(flow: Flow<String>) {
+    // Consumer
+    val count by flow.collectAsState(initial = "Current value =")
+
+
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+
+}
+```
+
+### Collect
+more options than collectAsState
+``` kotlin
+fun MainScreen2(flow: Flow<String>) {
+    var count by remember { mutableStateOf("Current value =") }
+
+    LaunchedEffect(Unit) {
+        try {
+            flow.collect {
+                count = it
+            }
+        } finally {
+            count = "Flow stream ended !"
+        }
+    }
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // use of consumer
+        Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+    }
+}
+```
+
+#### other collection operators
+- collectLatest() : The cunsomer force the flow to provide the latest value
+- conflate() : ignore all intermediate values emitted by the flow and not yet handled
+- single() : collect a single value and throws an exception

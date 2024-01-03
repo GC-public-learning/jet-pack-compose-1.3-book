@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.*
 
 class DemoViewModel : ViewModel() {
     // Producer block
-    val myFlow: Flow<Int> = flow {
+    val myFlow: Flow<Int> = flow { // manually emits
         for (i in 0..9) {
             emit(i)
             delay(500)
@@ -29,7 +29,7 @@ class DemoViewModel : ViewModel() {
     val newFlow3 = myFlow
         .transform {
             emit("Value = $it")
-            delay(500)
+            delay(500) // additional delay (doesn't remove or modify the 1st delay)
             val doubled = it * 2
             emit("doubled value = $doubled")
         }
