@@ -2817,3 +2817,36 @@ fun MainScreen2(flow: Flow<String>) {
 - collectLatest() : The cunsomer force the flow to provide the latest value
 - conflate() : ignore all intermediate values emitted by the flow and not yet handled
 - single() : collect a single value and throws an exception
+- reduce() : make some calculs during the collect thank to the accumulator (record 1st flow value)
+- fold(value) : same than reduce() but the accumulator is init with a specific value
+
+#### Buffer
+// the producer emit without waiting the consumer on each iteration
+// all data is received by the consumer
+``` kotlin
+LaunchedEffect(Unit){
+	val elapsedTime = measureTimeMillis { // calculate collect time
+	    flow
+	    .buffer()
+	    .collect {
+	        count = it
+	        delay(1000)
+	    }
+	}
+	count = "Duration = $elapsedTime" // affected once the flow is completed
+}
+Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+```
+
+#### use of reduce()
+``` kotlin
+LaunchedEffect(Unit) {
+    flow.reduce { accumulator, value ->
+        count = accumulator
+        accumulator + value
+    }
+}
+Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+```
+
+

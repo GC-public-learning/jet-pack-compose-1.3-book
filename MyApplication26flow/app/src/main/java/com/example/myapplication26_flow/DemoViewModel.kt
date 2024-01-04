@@ -25,7 +25,7 @@ class DemoViewModel : ViewModel() {
         .map {
             "Current value = $it"
         }
-    // use of transform (more options than "map"
+    // use of transform (more options than "map")
     val newFlow3 = myFlow
         .transform {
             emit("Value = $it")

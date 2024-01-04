@@ -26,6 +26,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication26_flow.ui.theme.MyApplication26FlowTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.reduce
 import kotlin.system.measureTimeMillis
 
 
@@ -49,10 +51,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ScreenSetup(viewModel: DemoViewModel = viewModel()) {
 //    MainScreen(viewModel.myFlow)
-    Column {
+    Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         MainScreen(viewModel.newFlow3)
         MainScreen2(viewModel.newFlow3)
         MainScreen3(viewModel.newFlow3)
+        MainScreen4(viewModel.myFlow)
     }
 }
 
@@ -64,13 +70,7 @@ fun MainScreen(flow: Flow<String>) {
 //    val count by flow.collectAsState(initial = 0)
     val count by flow.collectAsState(initial = "Current value =")
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // use of consumer
-        Text(text = "$count", style = TextStyle(fontSize = 40.sp))
-    }
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 }
 
 @Composable
@@ -87,35 +87,40 @@ fun MainScreen2(flow: Flow<String>) {
             count = "Flow stream ended !"
         }
     }
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // use of consumer
-        Text(text = "$count", style = TextStyle(fontSize = 40.sp))
-    }
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 }
 
 @Composable
+// use of measureTimeMillis to calculate the time of the flow receive
 fun MainScreen3(flow: Flow<String>) {
     var count by remember { mutableStateOf("Current value =") }
 
     LaunchedEffect(Unit) {
         val elapsedTime = measureTimeMillis {
-            flow.collect {
-                count = it
-                delay(1000)
+            flow
+                .buffer() // the producer emit without waiting the consumer on each iteration & all data received
+                .collect {
+                    count = it
+                    delay(1000)
             }
         }
         count = "Duration = $elapsedTime" // affected once the flow is completed
     }
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // use of consumer
-        Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+}
+
+@Composable
+// use of reduce()
+fun MainScreen4(flow: Flow<Int>) {
+    var count by remember { mutableStateOf<Int>(0) }
+
+    LaunchedEffect(Unit) {
+        flow.reduce { accumulator, value ->
+            count = accumulator
+            accumulator + value
+        }
     }
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 }
 
 @Preview
