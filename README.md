@@ -2838,7 +2838,8 @@ LaunchedEffect(Unit){
 Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 ```
 
-#### use of reduce()
+#### reduce()
+the accumlator is assigned the 1st value of the flow
 ``` kotlin
 LaunchedEffect(Unit) {
     flow.reduce { accumulator, value ->
@@ -2848,5 +2849,58 @@ LaunchedEffect(Unit) {
 }
 Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 ```
+### Flow flattening
+a flow that use a flow
+``` kotlin
+// flow 1
+val myFlow: Flow<Int> = flow { // manually emits
+    for (i in 0..9) {
+        emit(i)
+        delay(500)
+    }
+}
+
+// flow 2
+fun doubleIt(value: Int) = flow {
+    emit(value)
+    delay(1000)
+    emit(value + value)
+}
+
+// use of
+var count by remember { mutableStateOf(0) }
+
+LaunchedEffect(Unit) {
+    viewModel.myFlow
+        //.flatMapConcat { viewModel.doubleIt(it) } // synchronous > both flows wait each other
+        .flatMapMerge { viewModel.doubleIt(it) } // asynchronous > both flows don't wait each other
+        .collect {
+            count = it
+            println("count = $it") // to check values not diplayed in the Text field
+        }
+}
+
+Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+```
+
+### Flows combination
+- zip : wait both flow have emitted before performing
+- combine : performs when one flow have emitted a value and user the former value of the flow not emitted
+
+
+``` kotlin
+var count by remember { mutableStateOf("") }
+
+LaunchedEffect(Unit) {
+    val flow1 = (1..5).asFlow().onEach { delay(1000) }
+    val flow2 = flowOf("one", "two", "three", "four").onEach { delay(1500) }
+
+    flow1.zip(flow2) { value, string -> "$value, $string" }
+        .collect { count = it }
+}
+
+Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+```
+
 
 

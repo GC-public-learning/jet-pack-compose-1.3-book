@@ -1,5 +1,6 @@
 package com.example.myapplication26_flow
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,8 +27,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication26_flow.ui.theme.MyApplication26FlowTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.reduce
+import kotlinx.coroutines.flow.zip
 import kotlin.system.measureTimeMillis
 
 
@@ -59,6 +67,8 @@ fun ScreenSetup(viewModel: DemoViewModel = viewModel()) {
         MainScreen2(viewModel.newFlow3)
         MainScreen3(viewModel.newFlow3)
         MainScreen4(viewModel.myFlow)
+        MainScreen5(viewModel)
+        MainScreen6()
     }
 }
 
@@ -119,6 +129,40 @@ fun MainScreen4(flow: Flow<Int>) {
             count = accumulator
             accumulator + value
         }
+    }
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+}
+
+@Composable
+// Flow flattening > use of flow that use a flow
+fun MainScreen5(viewModel: DemoViewModel = viewModel()) {
+    var count by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        viewModel.myFlow
+            //.flatMapConcat { viewModel.doubleIt(it) } // synchronous > both flows wait each other
+            .flatMapMerge { viewModel.doubleIt(it) } // asynchronous > both flows don't wait each other
+            .collect {
+                count = it
+                println("count = $it") // to check values not diplayed in the Text field
+            }
+    }
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+}
+
+@SuppressLint("FlowOperatorInvokedInComposition")
+@Composable
+fun MainScreen6() {
+    var count by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        val flow1 = (1..5).asFlow().onEach { delay(1000) }
+        val flow2 = flowOf("one", "two", "three", "four").onEach { delay(1500) }
+
+        // zip : wait both flow have emitted before performing
+        // combine : performs when one flow have emitted a value and user the former value of the flow not emitted
+        flow1.zip(flow2) { value, string -> "$value, $string" }
+            .collect { count = it }
     }
     Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 }
