@@ -1,10 +1,13 @@
 package com.example.myapplication26_flow
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 
-
+// COLD FLOW
+// ---------------
 class DemoViewModel : ViewModel() {
     // Producer block
     val myFlow: Flow<Int> = flow { // manually emits
@@ -38,5 +41,36 @@ class DemoViewModel : ViewModel() {
         emit(value)
         delay(1000)
         emit(value + value)
+    }
+}
+// HOT FLOW
+// -------------
+
+// State flow
+class DemoViewMOdel2: ViewModel() {
+    private val _stateFlow = MutableStateFlow(0)
+    val stateFlow = _stateFlow.asStateFlow()
+
+    fun increaseValue() {
+        _stateFlow.value +=1
+    }
+}
+
+// Shared flow
+class DemoViewModel3: ViewModel() {
+    private val _sharedFlow = MutableSharedFlow<Int>(
+        replay = 10,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val sharedFlow = _sharedFlow.asSharedFlow()
+    val subCount = _sharedFlow.subscriptionCount
+
+    fun startSharedFlow() {
+        viewModelScope.launch {
+            for(i in 1..5) {
+                _sharedFlow.emit(i)
+                delay(2000)
+            }
+        }
     }
 }

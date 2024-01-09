@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,7 +58,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ScreenSetup(viewModel: DemoViewModel = viewModel()) {
+fun ScreenSetup(
+    viewModel: DemoViewModel = viewModel(),
+    viewModel2: DemoViewMOdel2 = viewModel(),
+    viewModel3: DemoViewModel3 = viewModel()
+) {
 //    MainScreen(viewModel.myFlow)
     Column(
             verticalArrangement = Arrangement.Center,
@@ -69,8 +74,12 @@ fun ScreenSetup(viewModel: DemoViewModel = viewModel()) {
         MainScreen4(viewModel.myFlow)
         MainScreen5(viewModel)
         MainScreen6()
+        MainScreen7(viewModel2)
+        MainScreen8(viewModel3)
     }
 }
+// COLD FLOW
+// ---------------
 
 @Composable
 // use of collectAsState
@@ -152,6 +161,7 @@ fun MainScreen5(viewModel: DemoViewModel = viewModel()) {
 
 @SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
+// Flows combination
 fun MainScreen6() {
     var count by remember { mutableStateOf("") }
 
@@ -167,6 +177,37 @@ fun MainScreen6() {
     Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 }
 
+// -------------------------------------------------------------------------------
+
+// HOT FLOW
+// -----------
+
+@Composable
+// State flow
+fun MainScreen7(viewModel: DemoViewMOdel2) {
+    val count by viewModel.stateFlow.collectAsState()
+    
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+    Button(onClick = { viewModel.increaseValue() }) {
+        Text(text = "Click state FLow")
+    }
+}
+
+@Composable
+// Shared flow
+fun MainScreen8(viewModel: DemoViewModel3) {
+    val count by viewModel.sharedFlow.collectAsState(initial = 0)
+
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+    Button(onClick = { viewModel.startSharedFlow() }) {
+        Text(text = "Click shared flow")
+    }
+    Text(text = "suscribers count = $viewModel.subCount")
+}
+
+
+
+// -------------------------------------------------------------------------------
 @Preview
 @Composable
 fun ScreenSetupPreview() {

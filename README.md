@@ -2884,8 +2884,8 @@ Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 ```
 
 ### Flows combination
-- zip : wait both flow have emitted before performing
-- combine : performs when one flow have emitted a value and user the former value of the flow not emitted
+- zip : wait both flows have emitted before performing
+- combine : performs when one flow have emitted a value and uses the former value of the flow not emitted
 
 
 ``` kotlin
@@ -2902,5 +2902,45 @@ LaunchedEffect(Unit) {
 Text(text = "$count", style = TextStyle(fontSize = 40.sp))
 ```
 
+### Cold & hot flows
+- cold flow : Wait a consumer call to start & the flow based stream doesn't have multi consumers (new generated flow for each consumer). 
+- hot flow : start by itsel, many consumers and each consumer get the last value emited when it starts to receive (use of stateFlow & SharedFlow).
 
+#### stateFlow
+Almost works like "liveData", the ui that uses the flow is regenerated on each new value
+info : initial value mandatory
 
+``` kotlin
+class DemoViewMOdel2: ViewModel() {
+    private val _stateFlow = MutableStateFlow(0)
+    val stateFlow = _stateFlow.asStateFlow()
+
+    fun increaseValue() {
+        _stateFlow.value +=1
+    }
+}
+
+fun MainScreen7(viewModel: DemoViewMOdel2) {
+    val count by viewModel.stateFlow.collectAsState()
+    
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+    Button(onClick = { viewModel.increaseValue() }) {
+        Text(text = "Click me")
+    }
+}
+```
+
+#### SharedFlow
+- consumers refered as subscribers
+- initial value not provided
+- allows values to be replayed
+- emits values instead of using value property
+
+initialized with MutableSharedFlow()
+
+##### possibles options :
+- DROP_LATEST : The latest value is dropped when the buffer is full leaving the buffer unchanged as new values are processed.
+
+- DROP_OLDEST : Treats the buffer as a “first-in, first-out” stack where the oldest value is dropped to make room for a new value when the buffer is full.
+
+- SUSPEND : The flow is suspended when the buffer is full.
