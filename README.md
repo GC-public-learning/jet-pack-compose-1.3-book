@@ -2944,3 +2944,37 @@ initialized with MutableSharedFlow()
 - DROP_OLDEST : Treats the buffer as a “first-in, first-out” stack where the oldest value is dropped to make room for a new value when the buffer is full.
 
 - SUSPEND : The flow is suspended when the buffer is full.
+
+``` kotlin
+class DemoViewModel3: ViewModel() {
+    private val _sharedFlow = MutableSharedFlow<Int>(
+        replay = 10, // size of the buffer (a new consumer will start by getting the last 10 values already emitted)
+        onBufferOverflow = BufferOverflow.DROP_OLDEST // deletion of elements acts like FIFO queue
+    )
+    val sharedFlow = _sharedFlow.asSharedFlow()
+    val subCount = _sharedFlow.subscriptionCount // total of subscribers
+
+    fun startSharedFlow() {
+        viewModelScope.launch {
+            for(i in 1..5) {
+                _sharedFlow.emit(i)
+                delay(2000)
+            }
+        }
+    }
+}
+
+@SuppressLint("StateFlowValueCalledInComposition") // to allow subcount.value
+@Composable
+// Shared flow
+fun MainScreen8(viewModel: DemoViewModel3) {
+    val count by viewModel.sharedFlow.collectAsState(initial = 0)
+
+    Text(text = "$count", style = TextStyle(fontSize = 40.sp))
+    Button(onClick = { viewModel.startSharedFlow() }) {
+        Text(text = "Click shared flow")
+    }
+    Text(text = "suscribers count = ${viewModel.subCount.value}")
+}
+
+```

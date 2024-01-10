@@ -59,11 +59,11 @@ class DemoViewMOdel2: ViewModel() {
 // Shared flow
 class DemoViewModel3: ViewModel() {
     private val _sharedFlow = MutableSharedFlow<Int>(
-        replay = 10,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
+        replay = 10, // size of the buffer (a new consumer will start by getting the last 10 values already emitted)
+        onBufferOverflow = BufferOverflow.DROP_OLDEST // deletion of elements acts like FIFO queue
     )
     val sharedFlow = _sharedFlow.asSharedFlow()
-    val subCount = _sharedFlow.subscriptionCount
+    val subCount = _sharedFlow.subscriptionCount // total of subscribers
 
     fun startSharedFlow() {
         viewModelScope.launch {

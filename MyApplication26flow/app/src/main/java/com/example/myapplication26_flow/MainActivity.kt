@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication26_flow.ui.theme.MyApplication26FlowTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
@@ -35,8 +41,12 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.flow.reduce
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.system.measureTimeMillis
 
 
@@ -75,6 +85,7 @@ fun ScreenSetup(
         MainScreen5(viewModel)
         MainScreen6()
         MainScreen7(viewModel2)
+        MainScreen8(viewModel3)
         MainScreen8(viewModel3)
     }
 }
@@ -193,6 +204,7 @@ fun MainScreen7(viewModel: DemoViewMOdel2) {
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 // Shared flow
 fun MainScreen8(viewModel: DemoViewModel3) {
@@ -202,8 +214,10 @@ fun MainScreen8(viewModel: DemoViewModel3) {
     Button(onClick = { viewModel.startSharedFlow() }) {
         Text(text = "Click shared flow")
     }
-    Text(text = "suscribers count = $viewModel.subCount")
+    Text(text = "suscribers count = ${viewModel.subCount.value}")
 }
+
+
 
 
 
@@ -213,6 +227,7 @@ fun MainScreen8(viewModel: DemoViewModel3) {
 fun ScreenSetupPreview() {
     MyApplication26FlowTheme {
         ScreenSetup(viewModel())
+
     }
 }
 
