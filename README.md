@@ -2976,5 +2976,69 @@ fun MainScreen8(viewModel: DemoViewModel3) {
     }
     Text(text = "suscribers count = ${viewModel.subCount.value}")
 }
-
 ```
+
+## 6.25 Shared flow tuto app (see book/MyApplication27sharedflow)
+
+### build.gradle dependencies
+``` kotlin
+dependencies {
+	...
+	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    ...
+}
+```
+
+``` kotlin
+class DemoViewModel : ViewModel(){
+    private val _sharedFlow = MutableSharedFlow<Int>()
+    val sharedFlow = _sharedFlow.asSharedFlow()
+
+    init {
+        sharedFlowInit()
+    }
+    fun sharedFlowInit() {
+        viewModelScope.launch {
+            for(i in 1..1000) {
+                delay(2000)
+                println("Emitting $i")
+                _sharedFlow.emit(i)
+            }
+        }
+    }
+}
+
+@Composable
+fun ScreenSetup(viewModel: DemoViewModel = viewModel()) {
+    MainScreen(viewModel.sharedFlow)
+}
+
+@Composable
+fun MainScreen(sharedFlow: SharedFlow<Int>) {
+    val messages = remember { mutableStateListOf<Int>() }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    
+    LaunchedEffect(key1 = Unit) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            // thanks to that when the app is on the background the emitting continue but the collecting stop
+            // without that both the emitting and the collection are running when the app is on the background
+            sharedFlow.collect {
+                println("collecting $it")
+                messages.add(it)
+            }
+        }
+    }
+
+    LazyColumn {
+        items(messages) {
+            Text(
+                text = "Collected value = $it",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(5.dp)
+            )
+        }
+    }
+}
+```
+
