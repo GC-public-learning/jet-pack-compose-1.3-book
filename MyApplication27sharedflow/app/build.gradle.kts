@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.myapplication27_sharedflow"
+        applicationId = "com.hunteroxo.myapplication27_sharedflow"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

@@ -3042,3 +3042,55 @@ fun MainScreen(sharedFlow: SharedFlow<Int>) {
 }
 ```
 
+## Create App in Google play
+
+1) Register to Google play developer
+2) use of create app
+3) create a keystore file
+To create a keystore file, select the Android Studio Build -> Generate Signed Bundle / APK... menu option to display the Generate Signed Bundle or APK Wizard.
+Verify that the Android App Bundle option is selected before clicking on the Next button.
+4) Creating the Android app bundle
+Make sure that the Export Encrypted Key option is enabled
+5) Download "Bundletool" > .jar downloadable here : https://github.com/google/bundletool/releases
+6) Generate apk file from .aab release file with Bundletool
+- open terminal from Bundletool...jar folder
+- Make sure a virtual device is running
+- Make sure "applicationId" in build gradle doesn't integer "com.example..." because it is restricted and cannot be uploaded ! (just rename "example" is enough)
+``` bash
+java -jar bundletool-all-1.15.6.jar build-apks --bundle='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/app-release.aab' --output='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/MyApks.apks' --ks='~/AndroidStudioProjects/key/key1.jks' --ks-key-alias=key0
+```
+7) install appropriate apk
+``` bash
+java -jar bundletool-all-1.15.6.jar install-apks --apks='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/MyApks.apks'
+```
+8) extract the APK files from the APK Set for the connected device without installing
+
+Json virtual device config file creation
+``` bash
+java -jar bundletool-all-1.15.6.jar get-device-spec --output='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/device.json'
+```
+
+APK files extraction
+``` bash
+java -jar bundletool-all-1.15.6.jar extract-apks --apks='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/MyApks.apks' --output-dir='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/virtualDeviceApks.apks' --device-spec='~/AndroidStudioProjects/book jet pack compose 1.3/MyApplication27sharedflow/app/release/device.json'```
+```
+
+9) upload to Google play
+- Home
+- select project
+- Testing > Internal testing
+- Create new release
+- be sure in build.gradle 
+- upload the .aab release
+- Save as draft (page bottom)
+- click on right arrow to show info
+- go to deviec catalog to display the compatible devices
+- manage the testers (obligatory)
+- publish
+- if new app bundle uploaded > in build.gradle  > versionName msut be uploaded (ex : 2.0)
+
+
+
+
+
+
