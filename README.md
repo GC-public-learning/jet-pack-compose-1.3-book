@@ -3084,10 +3084,14 @@ java -jar bundletool-all-1.15.6.jar extract-apks --apks='~/AndroidStudioProjects
 - upload the .aab release
 - Save as draft (page bottom)
 - click on right arrow to show info
-- go to deviec catalog to display the compatible devices
+- go to device catalog to display the compatible devices
 - manage the testers (obligatory)
 - publish
-- if new app bundle uploaded > in build.gradle  > versionName msut be uploaded (ex : 2.0)
+- on the bottom of internal testing page > copy link and manually send it by mail to the testers
+- if new app bundle uploaded > in build.gradle  > versionName must be uploaded (ex : 2.0)
+
+10) Android Studio APK analyser
+go to build > analyse apk
 
 
 
