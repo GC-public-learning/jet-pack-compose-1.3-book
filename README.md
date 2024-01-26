@@ -3042,6 +3042,8 @@ fun MainScreen(sharedFlow: SharedFlow<Int>) {
 }
 ```
 
+# Google PLay
+
 ## Create App in Google play
 
 1) Register to Google play developer
@@ -3080,18 +3082,35 @@ java -jar bundletool-all-1.15.6.jar extract-apks --apks='~/AndroidStudioProjects
 - select project
 - Testing > Internal testing
 - Create new release
-- be sure in build.gradle 
+- choose signing key
 - upload the .aab release
+- choose a release name
 - Save as draft (page bottom)
 - click on right arrow to show info
 - go to device catalog to display the compatible devices
 - manage the testers (obligatory)
 - publish
 - on the bottom of internal testing page > copy link and manually send it by mail to the testers
-- if new app bundle uploaded > in build.gradle  > versionName must be uploaded (ex : 2.0)
+- if new app bundle uploaded > in build.gradle  > versionName & versionCode must be uploaded (ex : 2.0)
 
 10) Android Studio APK analyser
 go to build > analyse apk
+
+
+## In-app billing (see book/MyApplication28InAppPurchase)
+
+ 1) new dependencies in build.gradle
+``` kotlin
+dependencies {
+...
+implementation 'com.android.billingclient:billing:<latest version>'
+implementation 'com.android.billingclient:billing-ktx:<latest version>'
+...
+}
+```
+
+2) upload the app in the console
+3) go to Google play console > Setup > Payments profile
 
 
 
