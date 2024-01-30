@@ -3122,6 +3122,8 @@ implementation 'com.android.billingclient:billing-ktx:<latest version>'
 8) setup name, description, Default price and save
 9) activate the product 
 
+# Theming (see book/MyApplication29theming)
+easy materia theme creation via : https://m3.material.io/theme-builder#/custom
 
 
 
