@@ -3,11 +3,15 @@ package com.example.myapplication28_inapppurchase
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -48,8 +52,11 @@ fun MainScreen(purchaseHelper: PurchaseHelper) {
     val productName by purchaseHelper.productName.collectAsState("")
     val statusText by purchaseHelper.statusText.collectAsState("")
 
+    val scrollState = rememberScrollState()
     Column(
-        Modifier.padding(20.dp),
+        Modifier
+            .padding(20.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

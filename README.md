@@ -3109,8 +3109,18 @@ implementation 'com.android.billingclient:billing-ktx:<latest version>'
 }
 ```
 
-2) upload the app in the console
+
+- For the rest of the code > see : book/MyApplication28InAppPurchase (too much code to explain)
+- !! make the 1st composable scrollable in arder to see all the details of the purchase methods 
+
+2) upload the release in the console and publish
 3) go to Google play console > Setup > Payments profile
+4) save and verify with google the method selected (litle amount sent by google in bank account after around 3 business days)
+5) setup a payments method
+6) go to the "in App purchase" relase
+7) in app product
+8) setup name, description, Default price and save
+9) activate the product 
 
 
 
