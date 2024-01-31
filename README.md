@@ -3123,7 +3123,44 @@ implementation 'com.android.billingclient:billing-ktx:<latest version>'
 9) activate the product 
 
 # Theming (see book/MyApplication29theming)
-easy materia theme creation via : https://m3.material.io/theme-builder#/custom
+
+## Static theme
+Choose the colors scheme you want for the app
+
+1) create Materia 3 theme via : https://m3.material.io/theme-builder#/custom
+2) Export to Jetpackcompose file
+3) extract and replace in the project Color.kt and Theme.kt
+4) in Theme.kt, replace the Theme.kt composable fun name by the project theme name
+
+## Dynamic theme
+The app theme colors can be modified in function of the Walpaper colors. So Make sure "Walpaper colors" in "Walpaper and style" on the  mobile device settings is selected and choose a set of colors.
+
+Then modify the Theme.kt in order to make the app theme colors the same as the Walpaper theme colors : 
+``` kotlin
+@Composable
+fun MyApplication29ThemingTheme (
+  useDarkTheme: Boolean = isSystemInDarkTheme(),
+  dynamicColor: Boolean = true,
+  content: @Composable() () -> Unit
+) {
+    val colors = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (useDarkTheme) dynamicDarkColorScheme(context)
+            else dynamicLightColorScheme(context)
+        }
+        useDarkTheme -> DarkColors
+        else -> LightColors
+    }
+
+  MaterialTheme(
+    colorScheme = colors,
+    content = content
+  )
+}
+```
+
+
 
 
 
