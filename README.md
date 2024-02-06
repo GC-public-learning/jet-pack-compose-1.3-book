@@ -3159,6 +3159,60 @@ fun MyApplication29ThemingTheme (
   )
 }
 ```
+# Alternative ways to build release or debug release
+
+## Sign in settings implemented on Build.gradle
+
+- Raw password
+``` kotlin
+signingConfigs {
+	release {
+		storeFile file("keystore.release")
+		storePassword "your keystore password here"
+		keyAlias "your key alias here"
+		keyPassword "your key password here"
+	}
+}
+```
+
+- From environment variables
+``` kotlin
+signingConfigs {
+	release {
+		storeFile file("keystore.release")
+		storePassword System.getenv("KEYSTOREPASSWD")
+		keyAlias "your key alias here"
+		keyPassword System.getenv("KEYPASSWD")
+	}
+}
+```
+
+- Make prompts during build process
+``` kotlin
+signingConfigs {
+	release {
+		storeFile file("keystore.release")
+		storePassword System.console().readLine
+		("\nEnter Keystore password: ")
+		keyAlias "your key alias here"
+		keyPassword System.console().readLIne("\nEnter Key password: ")
+	}
+}
+``` 
+
+Use of command-lines via "gradlew"
+
+from Project root folder in terminal :
+``` bash
+chmod +x gradlew # make gradlew executable
+./gradlew tasks # show available tasks
+./gradlew assembleDebug # create debug release for device/emulator
+./gradlew assembleRelease # create release for device/emulator
+```
+
+# End of book
+
+
 
 
 
