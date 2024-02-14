@@ -1,7 +1,7 @@
 # jet-pack-compose-1.3-book
 chapter skipped 8. Testing Android Studio Apps on a Physical Android Device
-if connection by usb > "usb debbuging" needs to be activated in the developer options from mobile
-if connection by wifi > "wireless debbuging" needs to be activated in dev options (both devices connected to same wifi nw)
+- if connection by usb > "usb debbuging" needs to be activated in the developer options from mobile
+- if connection by wifi > "wireless debbuging" needs to be activated in dev options (both devices connected to same wifi nw)
 
 # 1) .bashrc
 the PATH variable is a string that content all the paths setup for the terminal with ':' as separator for concatenation
