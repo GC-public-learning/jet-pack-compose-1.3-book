@@ -13,7 +13,7 @@ export ANDROID_AVD_HOME=$ANDROID_EMULATOR_HOME/avd
 export ANDROID_SDK_ROOT=/home/hunteroxo/Android/Sdk
 
 export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
-export PATH=$PATH:ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
 export PATH=$PATH:/var/lib/flatpak/app/com.google.AndroidStudio/x86_64/stable/793d23300e759d2dca9cd1c8beee8c60e2c3849fe9ffb33b853d2de226c618ed/files/extra/android-studio/bin
 ```
