@@ -42,6 +42,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication21_viewmodels.ui.theme.MyApplication21ViewmodelsTheme
 import java.lang.Exception
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -86,7 +88,7 @@ fun MainScreen(
     ) {
 
         var textState by remember { mutableStateOf("") }
-        val onTextChange = { text: String, ->
+        val onTextChange = { text: String ->
             textState = removeSpecialChars(text)
             convertTemp(textState)
         }
@@ -183,28 +185,34 @@ class DemoViewModel : ViewModel() {
     var result by mutableStateOf("")
 
     fun convertTemp(temp: String) {
-        if(temp == "") { result = ""; return }
-        result = try {
-            val tempInt = temp.toInt()
-            if (isFahrenheit) {
-                ((tempInt - 32) * 0.5556).roundToInt().toString()
-            } else {
-                ((tempInt * 1.8) + 32).roundToInt().toString()
-            }
+        if (temp == "") {
+            result = ""; return
         }
-        catch (e: Exception) {
+        result = try {
+            val tempFloat = temp.toFloat()
+            if (isFahrenheit) {
+                // formula result rounded to 5 digits
+                BigDecimal((tempFloat - 32) * 0.5556).setScale(5, RoundingMode.HALF_EVEN).toString()
+            } else {
+                // formula result rounded to 5 digits
+                BigDecimal((tempFloat * 1.8) + 32).setScale(5, RoundingMode.HALF_EVEN).toString()
+            }
+        } catch (e: Exception) {
             "Invalid Entry"
         }
     }
+
     fun switchChange() {
         isFahrenheit = !isFahrenheit
     }
     fun removeSpecialChars(text: String): String {
-        var result: String
-        var firstChar = Regex("^.").find(text)?.value // capture 1st char
-        if(firstChar != "-") firstChar = "" // if 1st char is not minus, 1st char deleted
-        result = text.replace(Regex("[^0-9]"), "") // delete all non number chars
-        return "$firstChar$result" // concatenate 1st char (when it is "-"
+        var textTemp = text
+        // correct regex : ^-?\d*(\d+[.]\d*)?$ but cannot work here as the function is triggered
+        // each time the textField is modified > + replaced by * in order to allow alone - and ended by .
+        textTemp = text.replace(",",".")
+        return if(textTemp.matches(Regex("^-?\\d*(\\d+[.]\\d*)?\$"))) textTemp
+        else if(textTemp != "") Regex(".*(?!$)").find(text)!!.value
+        else ""
     }
 }
 
@@ -219,7 +227,7 @@ fun GreetingPreview(model: DemoViewModel = viewModel()) {
             result = model.result,
             convertTemp = { model.convertTemp(it) },
             switchChange = { model.switchChange() },
-            removeSpecialChars = { model.removeSpecialChars(it)}
+            removeSpecialChars = { model.removeSpecialChars(it) }
         )
     }
 }

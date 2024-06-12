@@ -2332,7 +2332,7 @@ fun Home(navController: NavHostController) {
     }
 ```
 
-### Moving of var/val between screens
+### Passing of var/val between screens
 
 string passed as param ex :
 ``` kotlin

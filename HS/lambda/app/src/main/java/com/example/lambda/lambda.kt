@@ -41,6 +41,12 @@ fun main() {
     val const1 = { num: Int -> num.toString() }
     println(fun1(const1, 10)) // a const whose a lambada is assigned to as param
 
+    // if a function just has as param one high order fun, it is possible to put the lambda
+    // in the function body so the braces  can be removed
+    println( fun3( { number -> number * 2} ) )
+    // is the same than :
+    println( fun3 { number -> number * 2 } )
+
     // --------------------------------------------------
 
     var num = 0
@@ -100,6 +106,10 @@ fun fun1 (fun2 : (Int) -> String, num : Int) : String {
 // high order fun
 fun fun2 (fun1 : (Int, Int) -> Int, num1 : Int, num2 : Int) : String{
     return fun1(num1, num2).toString()
+}
+
+fun fun3 (fun1 : (Int) -> Int) : String{
+    return fun1(2).toString()
 }
 
 
