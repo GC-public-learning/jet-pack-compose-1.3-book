@@ -2306,7 +2306,7 @@ fun MainScreen() {
 }
 ```
 
-### composable (screen) ex :
+### composable (screen)
 ``` kotlin
 fun Home(navController: NavHostController) {
     var userName by remember { mutableStateOf("") }
@@ -2334,7 +2334,7 @@ fun Home(navController: NavHostController) {
 
 ### Passing of var/val between screens
 
-string passed as param ex :
+string passed as param
 ``` kotlin
 fun Home(navController: NavHostController) {
     var userName by remember { mutableStateOf("") }
@@ -2359,7 +2359,7 @@ fun Home(navController: NavHostController) {
         }
     }
 ```
-NavHost modification ex :
+NavHost modification :
 ``` kotlin
 fun MainScreen() {
     val navController = rememberNavController()
@@ -2383,7 +2383,7 @@ fun MainScreen() {
 }
 ```
 
-### Setup the back stack to popup a screen (home) ex :
+### Setup the back stack to popup a screen (home)
 ``` kotlin
 @Composable
 fun Welcome(navController: NavHostController, userName: String?) {
@@ -3213,6 +3213,20 @@ chmod +x gradlew # make gradlew executable
 ```
 
 # End of book
+
+# HS
+
+## lambda 
+(see HS/lambda)
+
+## permissions 
+(see/HS/permissions) 
+- simple and multiple permission requests
+- request permissions with dedicated alert dialogs 
+- custom alert dialog reminders in case permission not accepted
+
+
+
 
 
 
